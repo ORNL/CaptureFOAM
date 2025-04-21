@@ -1,7 +1,0 @@
-SOURCE += massTransferRateCoefficientModel/massTransferRateCoefficientModel.C
-SOURCE += massTransferRateCoefficientModel/massTransferRateCoefficientModelNew.C
-
-SOURCE += Higbie/Higbie.C
-SOURCE += porousMedia/porousMedia.C
-
-LIB = $(FOAM_USER_LIBBIN)/libmassTransferRateCoefficientModels

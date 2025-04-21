@@ -1,7 +1,0 @@
-SOURCE += interphaseMassTransferModel/interphaseMassTransferModel.C
-SOURCE += interphaseMassTransferModel/interphaseMassTransferModelNew.C
-
-SOURCE += constant/constant.C
-SOURCE += physical/physical.C
-
-LIB = $(FOAM_USER_LIBBIN)/libinterphaseMassTransferModels

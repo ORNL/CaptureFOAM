@@ -1,1 +1,0 @@
-../mixedTemperature/mixedTemperatureFvPatchScalarField.H
