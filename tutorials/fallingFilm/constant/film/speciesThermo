@@ -1,0 +1,143 @@
+species
+(
+    H2O
+    MEA
+    CO2
+    MEACOO
+    H3O+
+    MEA+
+);
+
+H2O
+{
+    specie
+    {
+        molWeight   18;
+    }
+    equationOfState
+    {
+        rho       1010;
+    };
+    thermodynamics
+    {
+        Cp          4181;
+        Hf          0; //Heat of fusion (latent heat?)
+    }
+    transport
+    {
+        mu          2.41e-3;
+        Pr          16.24; // Pr=Cp*mu/k
+    }
+}
+
+MEA
+{
+    specie
+    {
+        molWeight   61.084;
+    }
+    equationOfState
+    {
+        rho       1010;
+    };
+    thermodynamics
+    {
+        Cp          2640;
+        Hf          0;
+    }
+    transport
+    {
+        mu          2.41e-3;
+        Pr          27.31;
+    }
+}
+
+CO2
+{
+    specie
+    {
+        molWeight   44;
+    }
+    equationOfState
+    {
+        rho       1010;
+    };
+    thermodynamics
+    {
+        Cp          843;
+        Hf          0;
+    }
+    transport
+    {
+        mu          2.41e-3;
+        Pr          3.31;
+    }
+}
+
+MEACOO
+{
+    specie
+    {
+        molWeight   104.09;
+    }
+    equationOfState
+    {
+        rho       1010;
+    };
+    thermodynamics
+    {
+        Cp          2640;
+        Hf          0;
+    }
+    transport
+    {
+        mu          2.41e-3;
+        Pr          27.31;
+    }
+}
+
+H3O+
+{
+    specie
+    {
+        molWeight   19;
+    }
+    equationOfState
+    {
+        rho       1010;
+    };
+    thermodynamics
+    {
+        Cp          1852;
+        Hf          0;
+    }
+    transport
+    {
+        mu          2.41e-3;
+        Pr          7.28;
+    }
+}
+
+MEA+
+{
+    specie
+    {
+        molWeight   62.1;
+    }
+    equationOfState
+    {
+        rho       1010;
+    };
+    thermodynamics
+    {
+        Cp          2640;
+        Hf          0;
+    }
+    transport
+    {
+        mu          2.41e-3;
+        Pr          27.31;
+    }
+}
+
+// ************************************************************************* //

@@ -1,0 +1,43 @@
+species
+(
+    N2
+    CO2
+);
+
+N2
+{
+    specie
+    {
+        molWeight   28;
+    }
+    thermodynamics
+    {
+        Cp          1040;
+        Hf          0;
+    }
+    transport
+    {
+        mu          1.79e-5;
+        Pr          0.7;
+    }
+}
+
+CO2
+{
+    specie
+    {
+        molWeight   44;
+    }
+    thermodynamics
+    {
+        Cp          1040;
+        Hf          -8.94e+6;
+    }
+    transport
+    {
+        mu          1.5e-5;
+        Pr          0.7;
+    }
+}
+
+// ************************************************************************* //

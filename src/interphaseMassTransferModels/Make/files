@@ -1,0 +1,7 @@
+interphaseMassTransferModel/interphaseMassTransferModel.C
+interphaseMassTransferModel/interphaseMassTransferModelNew.C
+
+constant/constant.C
+physical/physical.C
+
+LIB = $(FOAM_USER_LIBBIN)/libinterphaseMassTransferModels

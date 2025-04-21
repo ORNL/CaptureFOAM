@@ -1,0 +1,7 @@
+enhancementModel/enhancementModel.C
+enhancementModel/enhancementModelNew.C
+
+noEnhancement/noEnhancement.C
+lowHa/lowHa.C
+
+LIB = $(FOAM_USER_LIBBIN)/libenhancementModels

@@ -1,0 +1,7 @@
+SOURCE += enhancementModel/enhancementModel.C
+SOURCE += enhancementModel/enhancementModelNew.C
+
+SOURCE += noEnhancement/noEnhancement.C
+SOURCE += lowHa/lowHa.C
+
+LIB = $(FOAM_USER_LIBBIN)/libenhancementModels

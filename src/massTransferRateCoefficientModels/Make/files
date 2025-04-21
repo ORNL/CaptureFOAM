@@ -1,0 +1,7 @@
+massTransferRateCoefficientModel/massTransferRateCoefficientModel.C
+massTransferRateCoefficientModel/massTransferRateCoefficientModelNew.C
+
+Higbie/Higbie.C
+porousMedia/porousMedia.C
+
+LIB = $(FOAM_USER_LIBBIN)/libmassTransferRateCoefficientModels

@@ -1,0 +1,71 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      fvModels;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+bulkMassTransfer
+{
+    type                bulkMassTransfer;
+    
+    select              all;
+    
+    transferPatch       film; // Name of patch on which mass transfer occurs
+        
+    specie              CO2; // Name of specie to transfer
+    
+    // Mass transfer model type (options: constant, physical)
+    interphaseMassTransferModel physical;
+    
+    // Coefficients for physical mass transfer model
+    physicalCoeffs
+    {        
+        H                   2.27e+6; // Henry volatility constant, Pa-m^3/kmol
+        
+        Dl                  1.66e-9; // Diffusivity of specie in film, m^2/s
+        
+        bulkMassTransferRateModel
+        {
+            massTransferRateCoefficientModel Higbie;
+            
+            HigbieCoeffs
+            {            
+                D               1.5e-5; // Diffusivity of specie in bulk, m^2/s
+            
+                inlet           (0.0 0.0 0.0); // Point anywhere along bulk inlet
+        
+                direction       (0 0 1); // Bulk flow direction
+            }
+        }
+        
+        filmMassTransferRateModel
+        {
+            massTransferRateCoefficientModel Higbie;
+            
+            HigbieCoeffs
+            {            
+               D               $Dl;
+            
+               inlet           (0.0 0.0 1.0); // Point anywhere along film inlet
+        
+               direction       (0 0 -1); // Film flow direction
+            }
+        }
+        
+        enhancementModel    lowHa; // Enhancement factor model type
+        
+        tStart              10.0; // When to start chemically enhanced xfer
+    }
+}
+
+// ************************************************************************* //

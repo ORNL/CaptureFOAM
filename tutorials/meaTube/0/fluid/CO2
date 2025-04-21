@@ -1,0 +1,40 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      CO2;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 0 0 0 0 0];
+
+internalField   uniform 0.282; // 20% mole fraction CO2
+
+boundaryField
+{
+    bottom
+    {
+        type            fixedValue;
+        value           $internalField;
+    }
+
+    "(top|film)"
+    {
+        type            zeroGradient;
+    }
+
+    "(side.*)"
+    {
+        type            wedge;
+    }
+}
+
+// ************************************************************************* //

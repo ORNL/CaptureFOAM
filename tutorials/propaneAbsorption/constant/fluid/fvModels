@@ -1,0 +1,65 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      fvModels;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+bulkMassTransfer
+{
+    type                bulkMassTransfer;
+    
+    select              all;
+    
+    transferPatch       film; // Name of patch on which mass transfer occurs
+        
+    specie              propane; // Name of specie to transfer
+    
+    // Mass transfer model type (options: constant, physical)
+    interphaseMassTransferModel physical;
+    
+    // Coefficients for physical mass transfer model
+    physicalCoeffs
+    {
+        H                   45648; // Henry volatility constant, Pa-m^3/kmol  
+        
+        bulkMassTransferRateModel
+        {
+            massTransferRateCoefficientModel Higbie;
+            
+            HigbieCoeffs
+            {
+                D                   4.91e-6; // Diffusivity of specie in bulk, m^2/s 
+                 
+                inlet               (0.025 0.0 0.0); // Point anywhere along bulk inlet
+        
+                direction           (0 0 1); // Bulk flow direction
+            }
+        }
+        
+        filmMassTransferRateModel
+        {
+            massTransferRateCoefficientModel Higbie;
+            
+            HigbieCoeffs
+            {            
+                D                   2.45e-9; // Diffusivity of specie in film, m^2/s
+           
+                inlet               (0.025 0.0 0.1); // Point anywhere along film inlet
+        
+                direction           (0 0 -1); // Film flow direction
+            }
+        }    
+    }
+}
+
+// ************************************************************************* //

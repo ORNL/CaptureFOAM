@@ -1,0 +1,23 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Create bulk mesh
+runApplication -s fluid blockMesh -region fluid
+
+# Create film mesh
+runApplication extrudeToRegionMesh -region fluid -overwrite
+
+# Create files for paraview post-processing
+paraFoam -touchAll
+
+# Decompose and run in parallel
+#runApplication decomposePar -allRegions
+#runParallel $(getApplication)
+runApplication $(getApplication)
+
+# Post-processing
+runApplication reconstructPar -allRegions
+
+#------------------------------------------------------------------------------

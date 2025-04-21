@@ -1,0 +1,3 @@
+ionizedArrheniusReactionRate/makeionizedArrheniusReactions.C
+
+LIB = $(FOAM_USER_LIBBIN)/libfilmReactions

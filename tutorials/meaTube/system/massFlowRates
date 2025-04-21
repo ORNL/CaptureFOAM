@@ -1,0 +1,141 @@
+//- Monitor mass flow rate of CO2 at boundaries
+bulkCO2Flow
+{
+    libs        ("libutilityFunctionObjects.so");
+
+    type coded;
+    
+    region  fluid;
+    
+    codeInclude
+    #{
+        #include "surfaceFields.H"
+        #include "fvc.H"
+    #};
+
+    codeExecute
+    #{
+        //- Geometric info
+        scalar r = 0.007;
+        
+        //- Get patch info for inlet and outlet
+        const scalar inletPatchi = mesh().boundaryMesh().findIndex("bottom");
+        const scalar outletPatchi = mesh().boundaryMesh().findIndex("top");
+        
+        const polyPatch& inletPatch = mesh().boundaryMesh()[inletPatchi];
+        const polyPatch& outletPatch = mesh().boundaryMesh()[outletPatchi];
+    
+        //- Lookup fields
+        const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+        const volScalarField& CO2 = mesh().lookupObject<volScalarField>("CO2");
+        const volScalarField& rho = mesh().lookupObject<volScalarField>("rho");
+        
+        //- Integrate over boundaries
+        scalar area = 0.0;
+        scalar mDotCO2i = 0.0;
+        scalar mDotCO2o = 0.0;
+        
+        forAll(inletPatch, facei)
+        {
+            area += mesh().magSf().boundaryField()[inletPatchi][facei];
+            
+            mDotCO2i
+                += (U.boundaryField()[inletPatchi][facei] 
+                    & mesh().Sf().boundaryField()[inletPatchi][facei])
+                   * CO2.boundaryField()[inletPatchi][facei]
+                   * rho.boundaryField()[inletPatchi][facei];
+        }
+        
+        forAll(outletPatch, facei)
+        {
+            mDotCO2o
+                += (U.boundaryField()[outletPatchi][facei] 
+                    & mesh().Sf().boundaryField()[outletPatchi][facei])
+                   * CO2.boundaryField()[outletPatchi][facei]
+                   * rho.boundaryField()[outletPatchi][facei];
+        }
+        
+        reduce(area, sumOp<scalar>());
+        reduce(mDotCO2i, sumOp<scalar>());
+        reduce(mDotCO2o, sumOp<scalar>());
+        
+        mDotCO2i /= -area;
+        mDotCO2o /= area;
+        
+        scalar Ap = 3.14159 * Foam::pow(r, 2.0);
+        
+        mDotCO2i *= Ap;
+        mDotCO2o *= Ap;
+        
+        Info << "Gas CO2 inlet flow rate: " << mDotCO2i << endl;
+        Info << "Gas CO2 outlet flow rate: " << mDotCO2o << endl;
+        Info << "Absorbed CO2: " << mDotCO2i - mDotCO2o << endl;
+    #};
+}
+
+filmCO2absorption
+{
+    libs        ("libutilityFunctionObjects.so");
+
+    type coded;
+    
+    region  film;
+    
+    codeInclude
+    #{
+        #include "surfaceFields.H"
+        #include "fvc.H"
+    #};
+
+    codeExecute
+    #{
+        //- Geometric info
+        scalar r = 0.007;
+        
+        //- Get patch info for outlet
+        const scalar outletPatchi = mesh().boundaryMesh().findIndex("bottom");
+        const polyPatch& outletPatch = mesh().boundaryMesh()[outletPatchi];
+    
+        //- Lookup fields
+        const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+        const volScalarField& CO2 = mesh().lookupObject<volScalarField>("MEACOO-");
+        const volScalarField& rho = mesh().lookupObject<volScalarField>("rho");
+        const volScalarField& alpha = mesh().lookupObject<volScalarField>("alpha");
+        const volScalarField& delta = mesh().lookupObject<volScalarField>("delta");
+        
+        //- Integrate over boundaries
+        scalar area = 0.0;
+        scalar d = 0.0;
+        scalar mDotCO2o = 0.0;
+        
+        const labelList& cells = mesh().boundary()[outletPatchi].faceCells();
+        
+        forAll(outletPatch, facei)
+        {
+            const label celli = cells[facei];
+        
+            mDotCO2o
+                += (U.boundaryField()[outletPatchi][facei] 
+                    & mesh().Sf().boundaryField()[outletPatchi][facei])
+                   * CO2.boundaryField()[outletPatchi][facei]
+                   * rho.boundaryField()[outletPatchi][facei];
+                   
+            area += mesh().magSf().boundaryField()[outletPatchi][facei];
+            d += delta[celli]
+                 * mesh().magSf().boundaryField()[outletPatchi][facei];
+        }
+        
+        reduce(area, sumOp<scalar>());
+        reduce(d, sumOp<scalar>());
+        reduce(mDotCO2o, sumOp<scalar>());
+        
+        d /= area;
+        mDotCO2o /= area;
+        mDotCO2o *= (2.0 * 3.14159 * d * r);
+        
+        //- Convert MEACOO mass flow to CO2 mass flow
+        mDotCO2o *= (44.0 / 104.0);
+        
+        Info << "Film CO2 outlet flow rate: " << mDotCO2o << endl;
+    #};
+}

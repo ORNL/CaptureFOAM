@@ -1,0 +1,52 @@
+species
+(
+    CO2
+    N2
+);
+
+CO2
+{
+    specie
+    {
+        molWeight   44;
+    }
+    /*equationOfState
+    {
+        rho     1.2;
+    }*/
+    thermodynamics
+    {
+        Cp          1004.62;
+        Hf          0;
+    }
+    transport
+    {
+        mu          1.716e-05;
+        Pr          0.66;
+    }
+}
+
+N2
+{
+    specie
+    {
+        molWeight   28;
+    }
+    /*equationOfState
+    {
+        rho     1.2;
+    }*/
+    thermodynamics
+    {
+        Cp          1004.62;
+        Hf          0;
+    }
+    transport
+    {
+        mu          1.716e-05;
+        Pr          0.66;
+    }
+}
+
+
+// ************************************************************************* //

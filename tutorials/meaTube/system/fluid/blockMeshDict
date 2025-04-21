@@ -1,0 +1,93 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 1;
+
+xMin 0.0;
+xMax 0.006995736;
+yMin -0.000244296;
+yMax 0.000244296;
+zMin 0.0;
+zMax 1.0;
+
+vertices
+(
+    ($xMin 0.0 $zMin)
+    ($xMax $yMin $zMin)
+    ($xMax $yMax $zMin)
+    ($xMin 0.0 $zMax)
+    ($xMax $yMin $zMax)
+    ($xMax $yMax $zMax)
+);
+
+blocks
+(
+    hex (0 1 2 0 3 4 5 3) (10 1 100) simpleGrading (1 1 1)
+);
+
+boundary
+(
+    bottom
+    {
+        type wall;
+        faces
+        (
+            (0 1 2 0)
+        );
+    }
+    
+    side1
+    {
+        type wedge;
+        faces
+        (
+            (0 1 4 3)
+        );
+    }
+    
+    side2
+    {
+        type wedge;
+        faces
+        (
+            (2 0 3 5)
+        );
+    }
+
+    top
+    {
+	    type patch;
+	    faces
+	    (
+	        (3 5 4 3)
+	    );
+    }
+
+    film
+    {
+        type            mappedExtrudedWall;
+        neighbourRegion film;
+        neighbourPatch  surface;
+        isExtrudedRegion no;
+
+        faces
+        (
+	        (1 2 5 4)
+        );
+    }
+);
+
+
+// ************************************************************************* //

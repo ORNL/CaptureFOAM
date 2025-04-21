@@ -1,0 +1,4 @@
+multicomponentFilm.C
+thermophysicalPredictor.C
+
+LIB = $(FOAM_USER_LIBBIN)/libmulticomponentFilm

@@ -1,0 +1,51 @@
+species
+(
+    propane
+    toluene
+);
+
+propane
+{
+    specie
+    {
+        molWeight   44.1;
+    }
+    equationOfState
+    {
+        rho         867;
+    };
+    thermodynamics
+    {
+        Cp          155;
+        Hf          0; //Heat of fusion (latent heat?)
+    }
+    transport
+    {
+        mu          5.87e-4;
+        Pr          7.1;
+    }
+}
+
+toluene
+{
+    specie
+    {
+        molWeight   92.14;
+    }
+    equationOfState
+    {
+        rho         867;
+    };
+    thermodynamics
+    {
+        Cp          155;
+        Hf          0;
+    }
+    transport
+    {
+        mu          5.87e-4;
+        Pr          7.1;
+    }
+}
+
+// ************************************************************************* //

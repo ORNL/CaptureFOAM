@@ -1,0 +1,145 @@
+//- Note: this FO does not work in parallel
+filmCO2Flow
+{
+    libs        ("libutilityFunctionObjects.so");
+
+    type coded;
+    
+    region  film;
+    
+    codeInclude
+    #{
+        #include "surfaceFields.H"
+        #include "fvc.H"
+    #};
+
+    codeExecute
+    #{
+        //- Get patch info for inlet and outlet
+        const scalar inletPatchi = mesh().boundaryMesh().findPatchID("inlet");
+        const scalar outletPatchi = mesh().boundaryMesh().findPatchID("outlet");
+        
+        const polyPatch& inletPatch = mesh().boundaryMesh()[inletPatchi];
+        const polyPatch& outletPatch = mesh().boundaryMesh()[outletPatchi];
+    
+        //- Lookup fields
+        const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+        const volScalarField& alpha = mesh().lookupObject<volScalarField>("alpha");
+        const volScalarField& CO2 = mesh().lookupObject<volScalarField>("CO2");
+        const volScalarField& rho = mesh().lookupObject<volScalarField>("rho");
+        
+        //- Integrate over boundaries
+        scalar mDotCO2i = 0.0;
+        scalar mDotCO2o = 0.0;
+        
+        //const labelList& inletCells = mesh().boundary()[inletPatchi].faceCells();
+        //const labelList& outletCells = mesh().boundary()[outletPatchi].faceCells();
+        
+        forAll(inletPatch, facei)
+        {
+            //const label celli = inletCells[facei];
+            
+            //mDotCO2i += (U[celli] & mesh().Sf().boundaryField()[inletPatchi][facei])
+            //            * alpha[celli] * CO2[celli] * rho[celli];
+            
+            mDotCO2i
+                += (U.boundaryField()[inletPatchi][facei] 
+                    & mesh().Sf().boundaryField()[inletPatchi][facei])
+                   * alpha.boundaryField()[inletPatchi][facei]
+                   * CO2.boundaryField()[inletPatchi][facei]
+                   * rho.boundaryField()[inletPatchi][facei];
+        }
+        
+        forAll(outletPatch, facei)
+        {
+            //const label celli = outletCells[facei];
+            
+            //mDotCO2o += (U[celli] & mesh().Sf().boundaryField()[inletPatchi][facei])
+            //            * alpha[celli] * CO2[celli] * rho[celli];
+            
+            mDotCO2o
+                += (U.boundaryField()[outletPatchi][facei] 
+                    & mesh().Sf().boundaryField()[outletPatchi][facei])
+                   * alpha.boundaryField()[outletPatchi][facei]
+                   * CO2.boundaryField()[outletPatchi][facei]
+                   * rho.boundaryField()[inletPatchi][facei];
+        }
+        
+        reduce(mDotCO2i, sumOp<scalar>());
+        reduce(mDotCO2o, sumOp<scalar>());
+        
+        Info << "Film mDotCO2in: " << mDotCO2i << endl;
+        Info << "Film mDotCO2out: " << mDotCO2o << endl;
+    #};
+}
+
+bulkCO2Flow
+{
+    libs        ("libutilityFunctionObjects.so");
+
+    type coded;
+    
+    region  fluid;
+    
+    codeInclude
+    #{
+        #include "surfaceFields.H"
+        #include "fvc.H"
+    #};
+
+    codeExecute
+    #{
+        //- Get patch info for inlet and outlet
+        const scalar inletPatchi = mesh().boundaryMesh().findPatchID("inlet");
+        const scalar outletPatchi = mesh().boundaryMesh().findPatchID("outlet");
+        
+        const polyPatch& inletPatch = mesh().boundaryMesh()[inletPatchi];
+        const polyPatch& outletPatch = mesh().boundaryMesh()[outletPatchi];
+    
+        //- Lookup fields
+        const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+        const volScalarField& CO2 = mesh().lookupObject<volScalarField>("CO2");
+        const volScalarField& rho = mesh().lookupObject<volScalarField>("rho");
+        
+        //- Integrate over boundaries
+        scalar mDotCO2i = 0.0;
+        scalar mDotCO2o = 0.0;
+        scalar phiToti = 0.0;
+        scalar phiToto = 0.0;
+        
+        forAll(inletPatch, facei)
+        {
+            mDotCO2i
+                += (U.boundaryField()[inletPatchi][facei] 
+                    & mesh().Sf().boundaryField()[inletPatchi][facei])
+                   * CO2.boundaryField()[inletPatchi][facei]
+                   * rho.boundaryField()[inletPatchi][facei];
+                   
+            phiToti
+                += (U.boundaryField()[inletPatchi][facei] 
+                    & mesh().Sf().boundaryField()[inletPatchi][facei]);
+        }
+        
+        forAll(outletPatch, facei)
+        {
+            mDotCO2o
+                += (U.boundaryField()[outletPatchi][facei] 
+                    & mesh().Sf().boundaryField()[outletPatchi][facei])
+                   * CO2.boundaryField()[outletPatchi][facei]
+                   * rho.boundaryField()[inletPatchi][facei];
+            phiToto
+                += (U.boundaryField()[outletPatchi][facei] 
+                    & mesh().Sf().boundaryField()[outletPatchi][facei]);
+        }
+        
+        reduce(mDotCO2i, sumOp<scalar>());
+        reduce(mDotCO2o, sumOp<scalar>());
+        reduce(phiToti, sumOp<scalar>());
+        reduce(phiToto, sumOp<scalar>());
+        
+        Info << "Bulk mDotCO2in: " << mDotCO2i << endl;
+        Info << "Bulk mDotCO2out: " << mDotCO2o << endl;
+        Info << "Total flux in: " << phiToti << endl;
+        Info << "Total flux out: " << phiToto << endl;
+    #};
+}

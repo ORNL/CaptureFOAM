@@ -1,0 +1,21 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Create bulk mesh
+runApplication -s fluid blockMesh -region fluid
+
+# Create film mesh
+runApplication extrudeToRegionMesh -region fluid -overwrite
+
+# Change wedge patches to symmetry in film mesh
+sed -i 's/wedge/symmetry/g' constant/film/polyMesh/boundary
+
+# Run case
+runApplication $(getApplication)
+
+# Post-processing
+runApplication reconstructPar -allRegions
+
+#------------------------------------------------------------------------------
