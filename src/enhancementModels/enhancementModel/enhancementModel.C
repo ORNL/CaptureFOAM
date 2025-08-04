@@ -42,6 +42,7 @@ Foam::enhancementModel::enhancementModel
     const word& type,
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
+    const solvers::multicomponentFluid& fluid,
     const label& filmSpecieID
 )
 :
@@ -74,7 +75,10 @@ Foam::enhancementModel::enhancementModel
         ),
         filmMesh_,
         dimensionedScalar(dimless / dimTime, 1.0)
-    )
+    ),
+    fluid_(fluid),
+    bulkMesh_(fluid_.p.mesh())
+
 {
 }
 
@@ -130,6 +134,21 @@ const Foam::volScalarField& Foam::enhancementModel::kApp()
 
         //- Update apparent reaction rate
         kApp_ = k1 * Foam::pow(Cmea, 2.0) + k2 * Cmea * Ch2o;
+
+	//- Calculate instantaneous enhancement factor
+//	const volScalarField& MEAp = filmMesh_.lookupObject<volScalarField>("MEA+");
+//	const volScalarField& MEACOOm = filmMesh_.lookupObject<volScalarField>("MEACOO-");
+//	const volScalarField& CO2 = filmMesh_.lookupObject<volScalarField>("CO2");
+
+//	const dimensionedScalar Wmeap(dimMass/dimMoles, 62.0);
+//	const dimensionedScalar Wmeacoo(dimMass/dimMoles, 104.0);
+//	const dimensionedScalar Wco2(dimMass/dimMoles, 44.0);
+	
+//	const volScalarField Cmeap = rho * MEAp / Wmeap;
+//	const volScalarField Cmeacoo = rho * MEACOOm / Wmeacoo;
+//	const volScalarField Cco2 = rho * CO2 / Wco2;
+
+//	Keq_ = Cmeap * Cmeacoo/(Cco2 * Foam::pow(Cmea,2.));
     }
 
     else if (filmMesh_.foundObject<volScalarField>("KSAR"))

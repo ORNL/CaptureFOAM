@@ -28,6 +28,9 @@ License
 #include "porousMedia.H"
 #include "addToRunTimeSelectionTable.H"
 
+//#include <iostream>
+//#include <fstream>
+
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 namespace Foam
@@ -84,7 +87,16 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
     
     //- Loop over cells adjacent to transfer patch
     const labelList& transferCells = mesh_.boundary()[patchID_].faceCells();
+  
+    // Create an array to hold the area of the faces
+    scalarField faceAreas(transferCells.size());
     
+    scalar dum1 = 0.0;
+    scalar dum2 = 0.0;
+    scalar dum3 = 0.0;
+    scalar dum4 = 0.0;
+    scalar dum5 = 0.0;
+    scalar dum6 = 0.0;
     forAll(transferCells, facei)
     {
         const label celli = transferCells[facei];
@@ -95,10 +107,36 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
             = Foam::pow(rho[facei] * Ub[facei] * dp_
                         / (mu[facei] * (1.0 - eps_)), 0.8);
         
+	const scalar gamma2
+            = Foam::pow(rho[facei] * mag(Ub[facei]) * dp_
+                       / (mu[facei] * (1.0 - eps_)), 0.8);
+
         //- Set rate coefficient
         k_[celli] = C_ * beta * gamma * D_ / dp_;
+
+	// Get the face index for the current cell
+        const label faceIndex = mesh_.boundary()[patchID_].faceCells()[facei];
+
+        // Calculate face area using the mesh object
+        const scalar area = mag(mesh_.faceAreas()[faceIndex]);
+        faceAreas[facei] = area;
+
+	dum1 += mag(Ub[facei]) * area;
+	dum2 += gamma * area;
+	dum3 += beta * area;
+	dum4 += k_[celli] * area;
+	dum5 += gamma2 * area;
+	dum6 += area;
+	Info << "With gamma = " << gamma << " yield kg = " << k_[celli] << endl;
+	Info << "With gamma2 = " << gamma2 << " yield kg = " << C_ * beta * gamma2 * D_ / dp_ << endl;
+
     }
-    
+    Info << "Surf averaged mag(Ub): " << dum1/dum6 << endl;
+    Info << "Surf averaged gamma: " << dum2/dum6 << endl;
+    Info << "Surf averaged gamma2: " << dum5/dum6 << endl;
+    Info << "Surf averaged beta: " << dum3/dum6 << endl;
+    Info << "Surf averaged kg: " << dum4/dum6 << endl;
+
     return k_;
 }
 

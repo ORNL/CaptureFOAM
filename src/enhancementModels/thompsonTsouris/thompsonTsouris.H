@@ -24,18 +24,22 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::interphaseMassTransferModels::noEnhancement
+    Foam::interphaseMassTransferModels::thompsonTsouris
 
 Description
-    Returns unity-valued enhancement factor field.
+    Enhancement factor from:
+
+    Thompson, J. A., & Tsouris, C. (2021). Rate-based absorption modeling for 
+    postcombustion CO2 capture with additively manufactured structured packing. 
+    Industrial & Engineering Chemistry Research, 60(41), 14845-14855.
 
 SourceFiles
-    noEnhancement.C
+    thompsonTsouris.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef noEnhancement_H
-#define noEnhancement_H
+#ifndef thompsonTsouris_H
+#define thompsonTsouris_H
 
 #include "enhancementModel.H"
 
@@ -47,41 +51,59 @@ namespace enhancementModels
 {
 
 /*---------------------------------------------------------------------------*\
-                               Class noEnhancement
+                                  Class thompsonTsouris
 \*---------------------------------------------------------------------------*/
 
-class noEnhancement
+class thompsonTsouris
 :
     public enhancementModel
 {
+    // Private Data
+
+        //- 1st coefficient of Diffusivity of specie in liquid
+        const dimensionedScalar D1_;
+
+	//- 2nd coefficient of Diffusivity of specie in liquid
+        const dimensionedScalar D2_;
+
+	volScalarField D_;
+
+        //- Time to turn enhancement on
+        const scalar tStart_;
+
+	//- Instantaneous enhancement factor
+	volScalarField Einf_;
 
 public:
 
     //- Runtime type information
-    TypeName("none");
+    TypeName("thompsonTsouris");
 
 
     // Constructors
 
         //- Construct from components
-        noEnhancement
+        thompsonTsouris
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
 	    const solvers::multicomponentFluid& fluid,
-	    const label& filmSpecieID
+            const label& filmSpecieID
         );
 
 
     //- Destructor
-    virtual ~noEnhancement()
+    virtual ~thompsonTsouris()
     {}
 
 
     // Member Functions
-    
+
         //- Update mass transfer field
         virtual void update();
+	
+	//- Calculate and return instantaneous enhancement factor
+	volScalarField& Einf();
 
         //- Read the dictionary
         virtual bool read();

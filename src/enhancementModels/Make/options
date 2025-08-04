@@ -3,6 +3,9 @@ EXE_INC = \
     -I../../applications/modules/multicomponentFilm/filmMulticomponentThermophysicalTransportModels/lnInclude \
     -I$(FOAM_MODULES)/isothermalFilm/lnInclude \
     -I$(FOAM_MODULES)/isothermalFilm/filmCompressibleMomentumTransportModels/lnInclude \
+    -I$(FOAM_MODULES)/multicomponentFluid/lnInclude \
+    -I$(FOAM_MODULES)/isothermalFluid/lnInclude \
+    -I$(FOAM_MODULES)/fluidSolver/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/basic/lnInclude \
     -I$(LIB_SRC)/physicalProperties/lnInclude \
     -I$(LIB_SRC)/MomentumTransportModels/momentumTransportModels/lnInclude \
@@ -24,5 +27,6 @@ LIB_LIBS = \
     -lmulticomponentFilm \
     -lfluidThermophysicalModels \
     -lfilmCompressibleMomentumTransportModels \
+    -lmulticomponentFluid \
     -lmeshTools \
     -lfiniteVolume
