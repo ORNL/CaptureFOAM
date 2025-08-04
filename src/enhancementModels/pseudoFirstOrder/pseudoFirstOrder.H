@@ -24,24 +24,26 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::interphaseMassTransferModels::penetrationModel
+    Foam::interphaseMassTransferModels::pseudoFirstOrder
 
 Description
     Enhancement factor according to the penetration model
-    where E = sqrt(1 + Ha^2)
+    where E = sqrt(1 + Ha^2). Model more appropriate for 
+    3 < Ha < E_inf;
 
     Reference:
     Aronu, UE, Hartono, A., Hoff, K. A., & Svendsen, H. F. (2011). 
-    Kinetics of carbon dioxide absorption into aqueous amino acid salt: potassium salt of sarcosine solution. 
+    Kinetics of carbon dioxide absorption into aqueous amino acid salt: 
+    potassium salt of sarcosine solution. 
     Industrial & engineering chemistry research , 50 (18), 10465-10475.
 
 SourceFiles
-    penetrationModel.C
+    pseudoFirstOrder.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef penetrationModel_H
-#define penetrationModel_H
+#ifndef pseudoFirstOrder_H
+#define pseudoFirstOrder_H
 
 #include "enhancementModel.H"
 
@@ -53,10 +55,10 @@ namespace enhancementModels
 {
 
 /*---------------------------------------------------------------------------*\
-                                  Class penetrationModel
+                                  Class pseudoFirstOrder
 \*---------------------------------------------------------------------------*/
 
-class penetrationModel
+class pseudoFirstOrder
 :
     public enhancementModel
 {
@@ -74,13 +76,13 @@ class penetrationModel
 public:
 
     //- Runtime type information
-    TypeName("penetrationModel");
+    TypeName("pseudoFirstOrder");
 
 
     // Constructors
 
         //- Construct from components
-        penetrationModel
+        pseudoFirstOrder
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
@@ -89,7 +91,7 @@ public:
 
 
     //- Destructor
-    virtual ~penetrationModel()
+    virtual ~pseudoFirstOrder()
     {}
 
 

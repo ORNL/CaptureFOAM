@@ -25,7 +25,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "penetrationModel.H"
+#include "pseudoFirstOrder.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -34,14 +34,14 @@ namespace Foam
 {
 namespace enhancementModels
 {
-    defineTypeNameAndDebug(penetrationModel, 0);
-    addToRunTimeSelectionTable(enhancementModel, penetrationModel, dictionary);
+    defineTypeNameAndDebug(pseudoFirstOrder, 0);
+    addToRunTimeSelectionTable(enhancementModel, pseudoFirstOrder, dictionary);
 }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::enhancementModels::penetrationModel::penetrationModel
+Foam::enhancementModels::pseudoFirstOrder::pseudoFirstOrder
 (
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
@@ -65,7 +65,7 @@ Foam::enhancementModels::penetrationModel::penetrationModel
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::enhancementModels::penetrationModel::update()
+void Foam::enhancementModels::pseudoFirstOrder::update()
 {
     //- Look up film-side mass transfer rate coefficient field
     const volScalarField& k_l = filmMesh_.lookupObject<volScalarField>("k");
@@ -74,9 +74,7 @@ void Foam::enhancementModels::penetrationModel::update()
     const volScalarField klLim
         = max(k_l, dimensionedScalar(dimVelocity, 1e-8));
 
-    dimensionedScalar D1(dimArea/dimTime/dimTemperature, D1_.value());
-    dimensionedScalar D2(dimArea/dimTime, D2_.value());
-    const volScalarField D = (D1 * Tf) + D2;
+    const volScalarField D = (D1_.value() * Tf) + D2_.value();  
 
     //- Set E = sqrt(1 + Ha^2)
     if (filmMesh_.time().value() >= tStart_)
@@ -87,7 +85,7 @@ void Foam::enhancementModels::penetrationModel::update()
 }
 
 
-bool Foam::enhancementModels::penetrationModel::read()
+bool Foam::enhancementModels::pseudoFirstOrder::read()
 {
     if (enhancementModel::read())
     {
