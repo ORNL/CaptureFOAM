@@ -89,11 +89,11 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
     // Create an array to hold the area of the faces
     scalarField faceAreas(transferCells.size());
     
-    scalar dum1 = 0.0;
-    scalar dum2 = 0.0;
-    scalar dum3 = 0.0;
-    scalar dum4 = 0.0;
-    scalar dum5 = 0.0;
+    scalar patchVelocity = 0.0;
+    scalar patchMassTransferCoefficient = 0.0;
+    scalar patchGamma = 0.0;
+    scalar patchBeta = 0.0;
+    scalar patchArea = 0.0;
     forAll(transferCells, facei)
     {
         const label celli = transferCells[facei];
@@ -114,17 +114,17 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
         const scalar area = mag(mesh_.faceAreas()[faceIndex]);
         faceAreas[facei] = area;
 
-	dum1 += mag(Ub[facei]) * area;
-	dum2 += k_[celli] * area;
-	dum3 += gamma * area;
-	dum4 += beta * area;
-	dum5 += area;
+	patchVelocity += mag(Ub[facei]) * area;
+	patchMassTransferCoefficient += k_[celli] * area;
+	patchGamma += gamma * area;
+	patchBeta += beta * area;
+	patchArea += area;
     }
     
-    Info << "Surf averaged mag(Ub): " << dum1/dum5 << endl;
-    Info << "Surf averaged gamma: " << dum3/dum5 << endl;
-    Info << "Surf averaged beta: " << dum4/dum5 << endl;
-    Info << "Surf averaged kg: " << dum2/dum5 << endl;
+    Info << "Surf averaged mag(Ub): " << patchVelocity / patchArea << endl;
+    Info << "Surf averaged gamma: " << patchGamma / patchArea << endl;
+    Info << "Surf averaged beta: " << patchBeta / patchArea << endl;
+    Info << "Surf averaged kg: " << patchMassTransferCoefficient / patchArea << endl;
 
     return k_;
 }
