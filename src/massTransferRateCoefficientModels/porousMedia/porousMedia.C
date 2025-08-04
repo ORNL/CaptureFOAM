@@ -28,6 +28,9 @@ License
 #include "porousMedia.H"
 #include "addToRunTimeSelectionTable.H"
 
+//#include <iostream>
+//#include <fstream>
+
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 namespace Foam
@@ -85,7 +88,6 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
     //- Loop over cells adjacent to transfer patch
     const labelList& transferCells = mesh_.boundary()[patchID_].faceCells();
 
-
     // Create an array to hold the area of the faces
     scalarField faceAreas(transferCells.size());
     
@@ -94,6 +96,7 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
     scalar patchGamma = 0.0;
     scalar patchBeta = 0.0;
     scalar patchArea = 0.0;
+
     forAll(transferCells, facei)
     {
         const label celli = transferCells[facei];
@@ -104,6 +107,10 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
             = Foam::pow(rho[facei] * mag(Ub[facei]) * dp_
                         / (mu[facei] * (1.0 - eps_)), 0.8);
         
+	const scalar gamma2
+            = Foam::pow(rho[facei] * mag(Ub[facei]) * dp_
+                       / (mu[facei] * (1.0 - eps_)), 0.8);
+
         //- Set rate coefficient
         k_[celli] = C_ * beta * gamma * D_ / dp_;
 
