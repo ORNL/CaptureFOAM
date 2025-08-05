@@ -40,17 +40,17 @@ bulkMassTransfer
         
         bulkMassTransferRateModel
         {
-            massTransferRateCoefficientModel porousMedia;
+            massTransferRateCoefficientModel Higbie;
             
-            porousMediaCoeffs
+            HigbieCoeffs
             {            
-                D               1.67e-5; // Diffusivity of specie in bulk, m^2/s
+                D1              0.0;
             
-                C           	0.021; // empirical constant
-        
-                porosity       	0.65; // Porosity of the cooling tower
+                D2           	1.5e-5;
 
-		poreDiameter	0.0304; // Pore diameter of the cooling tower. README file has details about calculation
+		inlet           (0.0 0.0 0.0); // Point anywhere along bulk inlet
+
+		direction       (0 0 1); // Bulk flow direction
             }
         }
         
@@ -64,15 +64,15 @@ bulkMassTransfer
 
                D2		$Dl2;
             
-               inlet           (0.0 0.254 0.0); // Point anywhere along film inlet
+               inlet           (0.0 0.0 1.0); // Point anywhere along film inlet
         
-               direction       (0 -1 0); // Film flow direction
+               direction       (0 0 -1); // Film flow direction
             }
         }
         
         enhancementModel    lowHa; // Enhancement factor model type
         
-        tStart              1.0; // When to start chemically enhanced xfer
+        tStart              10.0; // When to start chemically enhanced xfer
     }
 }
 
