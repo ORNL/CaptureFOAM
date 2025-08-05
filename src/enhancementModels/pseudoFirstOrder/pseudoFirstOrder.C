@@ -25,7 +25,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "lowHa.H"
+#include "pseudoFirstOrder.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -34,14 +34,14 @@ namespace Foam
 {
 namespace enhancementModels
 {
-    defineTypeNameAndDebug(lowHa, 0);
-    addToRunTimeSelectionTable(enhancementModel, lowHa, dictionary);
+    defineTypeNameAndDebug(pseudoFirstOrder, 0);
+    addToRunTimeSelectionTable(enhancementModel, pseudoFirstOrder, dictionary);
 }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::enhancementModels::lowHa::lowHa
+Foam::enhancementModels::pseudoFirstOrder::pseudoFirstOrder
 (
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
@@ -65,7 +65,7 @@ Foam::enhancementModels::lowHa::lowHa
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::enhancementModels::lowHa::update()
+void Foam::enhancementModels::pseudoFirstOrder::update()
 {
     //- Look up film-side mass transfer rate coefficient field
     const volScalarField& k_l = filmMesh_.lookupObject<volScalarField>("k");
@@ -74,17 +74,18 @@ void Foam::enhancementModels::lowHa::update()
     const volScalarField klLim
         = max(k_l, dimensionedScalar(dimVelocity, 1e-8));
 
-    const volScalarField D = (D1_ * Tf) + D2_;
+    const volScalarField D = (D1_ * Tf) + D2_;  
 
-    //- Set E = Ha
+    //- Set E = sqrt(1 + Ha^2)
     if (filmMesh_.time().value() >= tStart_)
     {
-        E_ = Foam::sqrt(D * enhancementModel::kApp()) / klLim;
+        E_ = Foam::sqrt(1.0 + 
+	     (D * enhancementModel::kApp() / Foam::pow(klLim,2)));
     }
 }
 
 
-bool Foam::enhancementModels::lowHa::read()
+bool Foam::enhancementModels::pseudoFirstOrder::read()
 {
     if (enhancementModel::read())
     {

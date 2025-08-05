@@ -3,5 +3,6 @@ enhancementModel/enhancementModelNew.C
 
 noEnhancement/noEnhancement.C
 lowHa/lowHa.C
+pseudoFirstOrder/pseudoFirstOrder.C
 
 LIB = $(FOAM_USER_LIBBIN)/libenhancementModels
