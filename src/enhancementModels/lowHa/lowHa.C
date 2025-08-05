@@ -74,7 +74,7 @@ void Foam::enhancementModels::lowHa::update()
     const volScalarField klLim
         = max(k_l, dimensionedScalar(dimVelocity, 1e-8));
 
-    const volScalarField D = (D1_.value() * Tf) + D2_.value();
+    const volScalarField D = (D1_ * Tf) + D2_;
 
     //- Set E = Ha
     if (filmMesh_.time().value() >= tStart_)

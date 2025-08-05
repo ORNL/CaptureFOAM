@@ -20,7 +20,7 @@ bulkMassTransfer
     
     select              all;
     
-    transferPatch       film; // Name of patch on which mass transfer occurs
+    transferPatch       fluid_to_film; // Name of patch on which mass transfer occurs
         
     specie              CO2; // Name of specie to transfer
     
@@ -30,21 +30,27 @@ bulkMassTransfer
     // Coefficients for physical mass transfer model
     physicalCoeffs
     {        
-        H                   2.27e+6; // Henry volatility constant, Pa-m^3/kmol
+        H1                  0.0; // 1st coefficient for Henry volatility constant, Pa-m^3/kmol/K
+
+        H2		    2.27e+6; // 2nd coefficient for Henry volatility constant, Pa-m^3/kmol
         
-        Dl                  1.66e-9; // Diffusivity of specie in film, m^2/s
+        Dl1                 0.0; // 1st coefficient for Diffusivity of specie in film, m^2/s/K
+
+        Dl2                 1.66e-9; // 2nd coefficient for Diffusivity of specie in film, m^2/s 
         
         bulkMassTransferRateModel
         {
-            massTransferRateCoefficientModel Higbie;
+            massTransferRateCoefficientModel porousMedia;
             
-            HigbieCoeffs
+            porousMediaCoeffs
             {            
-                D               1.5e-5; // Diffusivity of specie in bulk, m^2/s
+                D               1.67e-5; // Diffusivity of specie in bulk, m^2/s
             
-                inlet           (0.0 0.0 0.0); // Point anywhere along bulk inlet
+                C           	0.021; // empirical constant
         
-                direction       (0 0 1); // Bulk flow direction
+                porosity       	0.65; // Porosity of the cooling tower
+
+		poreDiameter	0.0304; // Pore diameter of the cooling tower. README file has details about calculation
             }
         }
         
@@ -54,17 +60,19 @@ bulkMassTransfer
             
             HigbieCoeffs
             {            
-               D               $Dl;
+               D1               $Dl1;
+
+               D2		$Dl2;
             
-               inlet           (0.0 0.0 1.0); // Point anywhere along film inlet
+               inlet           (0.0 0.254 0.0); // Point anywhere along film inlet
         
-               direction       (0 0 -1); // Film flow direction
+               direction       (0 -1 0); // Film flow direction
             }
         }
         
         enhancementModel    lowHa; // Enhancement factor model type
         
-        tStart              10.0; // When to start chemically enhanced xfer
+        tStart              1.0; // When to start chemically enhanced xfer
     }
 }
 

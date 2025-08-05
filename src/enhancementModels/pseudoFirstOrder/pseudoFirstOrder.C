@@ -74,7 +74,7 @@ void Foam::enhancementModels::pseudoFirstOrder::update()
     const volScalarField klLim
         = max(k_l, dimensionedScalar(dimVelocity, 1e-8));
 
-    const volScalarField D = (D1_.value() * Tf) + D2_.value();  
+    const volScalarField D = (D1_ * Tf) + D2_;  
 
     //- Set E = sqrt(1 + Ha^2)
     if (filmMesh_.time().value() >= tStart_)
