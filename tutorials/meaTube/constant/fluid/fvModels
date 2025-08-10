@@ -32,7 +32,7 @@ bulkMassTransfer
     {        
         H1                  0.0; // 1st coefficient for Henry volatility constant, Pa-m^3/kmol/K
 
-        H2		    2.27e+6; // 2nd coefficient for Henry volatility constant, Pa-m^3/kmol
+        H2                  2.27e+6; // 2nd coefficient for Henry volatility constant, Pa-m^3/kmol
         
         Dl1                 0.0; // 1st coefficient for Diffusivity of specie in film, m^2/s/K
 
