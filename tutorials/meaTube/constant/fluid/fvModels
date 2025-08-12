@@ -20,7 +20,7 @@ bulkMassTransfer
     
     select              all;
     
-    transferPatch       fluid_to_film; // Name of patch on which mass transfer occurs
+    transferPatch       film; // Name of patch on which mass transfer occurs
         
     specie              CO2; // Name of specie to transfer
     
