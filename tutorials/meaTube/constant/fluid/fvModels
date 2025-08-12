@@ -48,9 +48,9 @@ bulkMassTransfer
             
                 D2           	1.5e-5;
 
-		inlet           (0.0 0.0 0.0); // Point anywhere along bulk inlet
+                inlet           (0.0 0.0 0.0); // Point anywhere along bulk inlet
 
-		direction       (0 0 1); // Bulk flow direction
+                direction       (0 0 1); // Bulk flow direction
             }
         }
         
@@ -62,11 +62,11 @@ bulkMassTransfer
             {            
                D1               $Dl1;
 
-               D2		$Dl2;
+               D2               $Dl2;
             
-               inlet           (0.0 0.0 1.0); // Point anywhere along film inlet
+               inlet            (0.0 0.0 1.0); // Point anywhere along film inlet
         
-               direction       (0 0 -1); // Film flow direction
+               direction        (0 0 -1); // Film flow direction
             }
         }
         
