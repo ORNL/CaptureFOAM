@@ -30,9 +30,13 @@ bulkMassTransfer
     // Coefficients for physical mass transfer model
     physicalCoeffs
     {        
-        H                   2.27e+6; // Henry volatility constant, Pa-m^3/kmol
+        H1                  0.0; // 1st coefficient for Henry volatility constant, Pa-m^3/kmol/K
+
+        H2                  2.27e+6; // 2nd coefficient for Henry volatility constant, Pa-m^3/kmol
         
-        Dl                  1.66e-9; // Diffusivity of specie in film, m^2/s
+        Dl1                 0.0; // 1st coefficient for Diffusivity of specie in film, m^2/s/K
+
+        Dl2                 1.66e-9; // 2nd coefficient for Diffusivity of specie in film, m^2/s 
         
         bulkMassTransferRateModel
         {
@@ -40,10 +44,12 @@ bulkMassTransfer
             
             HigbieCoeffs
             {            
-                D               1.5e-5; // Diffusivity of specie in bulk, m^2/s
+                D1              0.0;
             
+                D2           	1.5e-5;
+
                 inlet           (0.0 0.0 0.0); // Point anywhere along bulk inlet
-        
+
                 direction       (0 0 1); // Bulk flow direction
             }
         }
@@ -54,11 +60,13 @@ bulkMassTransfer
             
             HigbieCoeffs
             {            
-               D               $Dl;
+               D1               $Dl1;
+
+               D2               $Dl2;
             
-               inlet           (0.0 0.0 1.0); // Point anywhere along film inlet
+               inlet            (0.0 0.0 1.0); // Point anywhere along film inlet
         
-               direction       (0 0 -1); // Film flow direction
+               direction        (0 0 -1); // Film flow direction
             }
         }
         
