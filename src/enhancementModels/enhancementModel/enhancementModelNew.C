@@ -33,6 +33,7 @@ Foam::autoPtr<Foam::enhancementModel> Foam::enhancementModel::New
 (
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
+    const solvers::multicomponentFluid& fluid,
     const label& filmSpecieID
 )
 {
@@ -56,7 +57,7 @@ Foam::autoPtr<Foam::enhancementModel> Foam::enhancementModel::New
             << exit(FatalError);
     }
 
-    return autoPtr<enhancementModel>(cstrIter()(dict, film, filmSpecieID));
+    return autoPtr<enhancementModel>(cstrIter()(dict, film, fluid, filmSpecieID));
 }
 
 
