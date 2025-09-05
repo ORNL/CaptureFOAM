@@ -80,6 +80,12 @@ protected:
         //- Apparent reaction rate
         volScalarField kApp_;
 
+	//- Pointer to bulk phase instance
+        const solvers::multicomponentFluid& fluid_;
+
+	//- Pointer to bulk mesh instance
+        const fvMesh& bulkMesh_;
+
 public:
 
     //- Runtime type information
