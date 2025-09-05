@@ -42,6 +42,7 @@ Foam::enhancementModel::enhancementModel
     const word& type,
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
+    const solvers::multicomponentFluid& fluid,
     const label& filmSpecieID
 )
 :
@@ -74,7 +75,9 @@ Foam::enhancementModel::enhancementModel
         ),
         filmMesh_,
         dimensionedScalar(dimless / dimTime, 1.0)
-    )
+    ),
+    fluid_(fluid),
+    bulkMesh_(fluid_.p.mesh())
 {
 }
 
