@@ -87,7 +87,7 @@ public:
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
-	    const solvers::multicomponentFluid& fluid,
+            const solvers::multicomponentFluid& fluid,
             const label& filmSpecieID
         );
 
@@ -102,8 +102,8 @@ public:
         //- Update mass transfer field
         virtual void update();
 	
-	//- Calculate and return instantaneous enhancement factor
-	volScalarField& Einf();
+        //- Calculate and return instantaneous enhancement factor
+        volScalarField& Einf();
 
         //- Read the dictionary
         virtual bool read();

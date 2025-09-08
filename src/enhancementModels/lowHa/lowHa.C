@@ -54,7 +54,7 @@ Foam::enhancementModels::lowHa::lowHa
         typeName,
         dict,
         film,
-	fluid,
+        fluid,
         filmSpecieID
     ),
     
