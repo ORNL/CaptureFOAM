@@ -54,7 +54,7 @@ Foam::enhancementModels::noEnhancement::noEnhancement
         typeName,
         dict,
         film,
-	fluid,
+        fluid,
         filmSpecieID
     )
 {

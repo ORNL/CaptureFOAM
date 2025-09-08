@@ -132,7 +132,7 @@ Foam::enhancementModels::thompsonTsouris::thompsonTsouris
         typeName,
         dict,
         film,
-	fluid,
+        fluid,
         filmSpecieID
     ),
 

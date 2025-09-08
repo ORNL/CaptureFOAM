@@ -100,7 +100,7 @@ public:
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
-	    const solvers::multicomponentFluid& fluid,
+            const solvers::multicomponentFluid& fluid,
             const label& filmSpecieID
         ),
         (dict, film, fluid, filmSpecieID)
@@ -115,7 +115,7 @@ public:
             const word& type,
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
-	    const solvers::multicomponentFluid& fluid,
+            const solvers::multicomponentFluid& fluid,
             const label& filmSpecieID
         );
         
@@ -129,7 +129,7 @@ public:
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
-	    const solvers::multicomponentFluid& fluid,
+            const solvers::multicomponentFluid& fluid,
             const label& filmSpecieID
         );
 
