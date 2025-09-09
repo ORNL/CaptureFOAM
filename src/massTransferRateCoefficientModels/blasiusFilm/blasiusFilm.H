@@ -73,7 +73,7 @@ class blasiusFilm
         //- Model coefficient
         const scalar C_;
 
-	//- Point on inlet patch
+        //- Point on inlet patch
         const vector inlet_;
         
         //- Direction of flow
