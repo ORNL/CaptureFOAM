@@ -110,10 +110,10 @@ Foam::massTransferRateCoefficientModels::higbieFilm::k()
         const scalar L = delta[celli];
         const scalar Ui = max(mag(Uboun[facei]), 1e-12);
         const scalar tau_conv = max(L / Ui, 1e-12);
-	const scalar tau_cap = Foam::pow(rho[facei] * Foam::pow(L, 3.0) 
+        const scalar tau_cap = Foam::pow(rho[facei] * Foam::pow(L, 3.0) 
 			/ sigma_.value(), 0.5);
         const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
-	const scalar tau = min(tau_conv, tau_cap);
+        const scalar tau = min(tau_conv, tau_cap);
 
         //- Set rate coefficient
         k_[celli] = 2.0 * Foam::sqrt(D / pi / tau);

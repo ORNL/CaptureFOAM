@@ -84,8 +84,6 @@ Foam::massTransferRateCoefficientModels::blasiusFilm::k()
     const volScalarField& T = mesh_.lookupObject<volScalarField>("T");
     const scalarField& Tboun = T.boundaryField()[patchID_];
 
-    //const volScalarField& delta = mesh_.lookupObject<volScalarField>("delta");
-
     //- Get density and viscosity fields from solver
     const volScalarField& rho = thermoFilm_.rho();
     const volScalarField& mu = thermoFilm_.mu();
@@ -101,14 +99,11 @@ Foam::massTransferRateCoefficientModels::blasiusFilm::k()
 	const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
 	const scalar facePosition = mag((mesh_.C()[celli] - inlet_) & dir_);
         const scalar faceRe = rho[facei] * mag(Uboun[facei]) * facePosition / mu[facei];
-        //const scalar faceRe = rho[facei] * mag(Uboun[facei]) * delta[celli] / mu[facei];
 	const scalar faceSc = mu[facei] / (rho[facei] * D);
 
         //- Set rate coefficient
-	k_[celli] = C_ * (D / facePosition) * Foam::pow(faceRe, 0.5)
+        k_[celli] = C_ * (D / facePosition) * Foam::pow(faceRe, 0.5)
                 * Foam::pow(faceSc, 0.333);
-        //k_[celli] = C_ * (D / delta[celli]) * Foam::pow(faceRe, 0.5)
-	//	* Foam::pow(faceSc, 0.333);
     }
 
     return k_;

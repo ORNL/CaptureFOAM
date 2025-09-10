@@ -70,11 +70,11 @@ class higbieFilm
         //- 2nd coefficient of Diffusivity of specie
         const dimensionedScalar D2_;
 
-	// Dictionary to get value of sigma
-	IOdictionary physicalProperties_;
+        // Dictionary to get value of sigma
+        IOdictionary physicalProperties_;
 
-	// Surface tension coefficient
-	dimensionedScalar sigma_;
+        // Surface tension coefficient
+        dimensionedScalar sigma_;
 	
 public:
 
