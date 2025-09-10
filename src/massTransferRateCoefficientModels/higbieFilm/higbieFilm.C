@@ -25,7 +25,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "Higbie.H"
+#include "higbieFilm.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -34,8 +34,8 @@ namespace Foam
 {
 namespace massTransferRateCoefficientModels
 {
-    defineTypeNameAndDebug(Higbie, 0);
-    addToRunTimeSelectionTable(massTransferRateCoefficientModel, Higbie, dictionary);
+    defineTypeNameAndDebug(higbieFilm, 0);
+    addToRunTimeSelectionTable(massTransferRateCoefficientModel, higbieFilm, dictionary);
 }
 }
 
@@ -43,7 +43,7 @@ using Foam::constant::mathematical::pi;
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::massTransferRateCoefficientModels::Higbie::Higbie
+Foam::massTransferRateCoefficientModels::higbieFilm::higbieFilm
 (
     const dictionary& dict,
     const fvMesh& mesh,
@@ -57,11 +57,24 @@ Foam::massTransferRateCoefficientModels::Higbie::Higbie
         mesh,
         patchID
     ),
-    
+
+    multicomponentFilm_(mesh.lookupObject<solvers::multicomponentFilm>(solver::typeName)),
+    thermoFilm_(multicomponentFilm_.thermo),    
     D1_(dimArea/dimTime/dimTemperature, rateModelCoeffs_.lookup<scalar>("D1")),
     D2_(dimArea/dimTime, rateModelCoeffs_.lookup<scalar>("D2")),
-    inlet_(rateModelCoeffs_.lookup<vector>("inlet")),
-    dir_(rateModelCoeffs_.lookup<vector>("direction"))
+    physicalProperties_
+    (
+        IOobject
+        (
+            "physicalProperties",
+            mesh.time().constant(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    ),
+    sigma_("sigma", dimForce/dimLength, physicalProperties_.subDict("sigma"))
+
 {
 }
 
@@ -69,7 +82,7 @@ Foam::massTransferRateCoefficientModels::Higbie::Higbie
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 const Foam::volScalarField&
-Foam::massTransferRateCoefficientModels::Higbie::k()
+Foam::massTransferRateCoefficientModels::higbieFilm::k()
 {
     //- Reset rate coefficient to zero
     k_ = Zero;
@@ -81,6 +94,11 @@ Foam::massTransferRateCoefficientModels::Higbie::k()
     const volScalarField& T = mesh_.lookupObject<volScalarField>("T");
     const scalarField& Tboun = T.boundaryField()[patchID_];
 
+    const volScalarField& delta = mesh_.lookupObject<volScalarField>("delta");
+
+    //- Get density field from solver
+    const volScalarField& rho = thermoFilm_.rho();
+    
     //- Loop over cells adjacent to transfer patch
     const labelList& transferCells = mesh_.boundary()[patchID_].faceCells();
     
@@ -88,11 +106,14 @@ Foam::massTransferRateCoefficientModels::Higbie::k()
     {
         const label celli = transferCells[facei];
         
-        //- Calculate contact time
-        const scalar L = mag((mesh_.C()[celli] - inlet_) & dir_);
+        //- Calculate contact time based on smallest eddies
+        const scalar L = delta[celli];
         const scalar Ui = max(mag(Uboun[facei]), 1e-12);
-        const scalar tau = max(L / Ui, 1e-12);
+        const scalar tau_conv = max(L / Ui, 1e-12);
+	const scalar tau_cap = Foam::pow(rho[facei] * Foam::pow(L, 3.0) 
+			/ sigma_.value(), 0.5);
         const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
+	const scalar tau = min(tau_conv, tau_cap);
 
         //- Set rate coefficient
         k_[celli] = 2.0 * Foam::sqrt(D / pi / tau);

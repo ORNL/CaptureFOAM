@@ -86,7 +86,7 @@ Foam::massTransferRateCoefficientModels::blasiusFilm::k()
 
     //const volScalarField& delta = mesh_.lookupObject<volScalarField>("delta");
 
-    //- Get density and porosity fields from solver
+    //- Get density and viscosity fields from solver
     const volScalarField& rho = thermoFilm_.rho();
     const volScalarField& mu = thermoFilm_.mu();
 

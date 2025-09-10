@@ -24,21 +24,22 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::massTransferRateCoefficientModels::Higbie
+    Foam::massTransferRateCoefficientModels::higbieFilm
 
 Description
     Mass transfer rate coefficient model based on Higbie penetration theory.
 
 SourceFiles
-    Higbie.C
+    higbieFilm.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef Higbie_H
-#define Higbie_H
+#ifndef higbieFilm_H
+#define higbieFilm_H
 
 #include "OFstream.H"
 #include "massTransferRateCoefficientModel.H"
+#include "multicomponentFilm.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -48,14 +49,20 @@ namespace massTransferRateCoefficientModels
 {
 
 /*---------------------------------------------------------------------------*\
-                                 Class Higbie
+                                 Class higbieFilm
 \*---------------------------------------------------------------------------*/
 
-class Higbie
+class higbieFilm
 :
     public massTransferRateCoefficientModel
 {
     // Private Data
+
+        //- The multi-component fluid model
+        const solvers::multicomponentFilm& multicomponentFilm_;
+
+        //- Reference to the transferred specie thermo package
+        const fluidMulticomponentThermo& thermoFilm_;
 
         //- 1st coefficient of Diffusivity of specie
         const dimensionedScalar D1_;
@@ -63,22 +70,22 @@ class Higbie
         //- 2nd coefficient of Diffusivity of specie
         const dimensionedScalar D2_;
 
-        //- Point on inlet patch
-        const vector inlet_;
-        
-        //- Direction of flow
-        const vector dir_;
+	// Dictionary to get value of sigma
+	IOdictionary physicalProperties_;
 
+	// Surface tension coefficient
+	dimensionedScalar sigma_;
+	
 public:
 
     //- Runtime type information
-    TypeName("Higbie");
+    TypeName("higbieFilm");
 
 
     // Constructors
 
         //- Construct from components
-        Higbie
+        higbieFilm
         (
             const dictionary& dict,
             const fvMesh& mesh,
@@ -87,7 +94,7 @@ public:
 
 
     //- Destructor
-    virtual ~Higbie()
+    virtual ~higbieFilm()
     {}
 
 
