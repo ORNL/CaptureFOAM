@@ -1,6 +1,7 @@
 massTransferRateCoefficientModel/massTransferRateCoefficientModel.C
 massTransferRateCoefficientModel/massTransferRateCoefficientModelNew.C
 
+higbieGas/higbieGas.C
 higbieFilm/higbieFilm.C
 porousMedia/porousMedia.C
 blasiusGas/blasiusGas.C
