@@ -139,42 +139,41 @@ Foam::massTransferRateCoefficientModels::higbie::k()
     forAll(transferCells, facei)
     {
         const label celli = transferCells[facei];
-	const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
-
+        const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
 
         //- Calculate contact time based on smallest eddies
-	if (isFilm_)
-	{
-	   const volScalarField& delta = mesh_.lookupObject<volScalarField>("delta");
+        if (isFilm_)
+        {
+           const volScalarField& delta = mesh_.lookupObject<volScalarField>("delta");
 
-	   const scalar L = delta[celli];
+           const scalar L = delta[celli];
            const scalar Ui = max(mag(Uboun[facei]), 1e-12);
            const scalar tau_conv = max(L / Ui, 1e-12);
            const scalar tau_cap = Foam::pow(rho[facei] * Foam::pow(L, 3.0) 
 			/ sigma_.value(), 0.5);
            const scalar tau = min(tau_conv, tau_cap);
 
-	   //- Set rate coefficient
-	   k_[celli] = 2.0 * Foam::sqrt(D / pi / tau);
-	}
-	else
-	{
-	   const label faceIndex = mesh_.boundary()[patchID_].faceCells()[facei];
-	   // Calculate face area using the mesh object
+           //- Set rate coefficient
+           k_[celli] = 2.0 * Foam::sqrt(D / pi / tau);
+        }
+        else
+        {
+           const label faceIndex = mesh_.boundary()[patchID_].faceCells()[facei];
+           // Calculate face area using the mesh object
            const scalar area = mag(mesh_.faceAreas()[faceIndex]);
            faceAreas[facei] = area;
 
-	   const scalar L = Foam::pow(area, 0.5);
-	   const scalar Ui = mag(Uboun[facei]);
-	   const scalar tau = max(L / Ui, 1e-12);
+           const scalar L = Foam::pow(area, 0.5);
+           const scalar Ui = mag(Uboun[facei]);
+           const scalar tau = max(L / Ui, 1e-12);
 
-	   //- Set rate coefficient
+           //- Set rate coefficient
            k_[celli] = 2.0 * Foam::sqrt(D / pi / tau);
 
-	    patchVelocity += Ui * area;
-            patchMassTransferCoefficient += k_[celli] * area;
-            patchArea += area;
-	}
+           patchVelocity += Ui * area;
+           patchMassTransferCoefficient += k_[celli] * area;
+           patchArea += area;
+        }
     }
 
     if (!isFilm_)

@@ -103,7 +103,7 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
         const label celli = transferCells[facei];
         
         //- Calculate correlation quantities
-	const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
+        const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
         const scalar beta = Foam::pow(mu[facei] / (rho[facei] * D), 0.333);
         const scalar gamma
             = Foam::pow(rho[facei] * mag(Ub[facei]) * dp_

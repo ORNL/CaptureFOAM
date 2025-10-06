@@ -65,24 +65,24 @@ Foam::massTransferRateCoefficientModels::blasius::blasius
     dir_(rateModelCoeffs_.lookup<vector>("direction"))
 {
 
-	if (mesh.foundObject<solvers::multicomponentFilm>("solver"))
-	{
-	   const auto& solver = mesh.lookupObject<solvers::multicomponentFilm>("solver");
-    	   thermo_ = &solver.thermo;
-	   isFilm_ = true;
-	}
-	else if (mesh.foundObject<solvers::multicomponentFluid>("solver"))
-	{
-	   const auto& solver = mesh.lookupObject<solvers::multicomponentFluid>("solver");
-    	   thermo_ = &solver.thermo;
-	   isFilm_ = false;
-	}
-	else
-	{
-	    FatalErrorInFunction
-        	<< "Cannot find either multicomponentFilm or multicomponentFluid object in the mesh registry"
-        	<< abort(FatalError);
-	}
+        if (mesh.foundObject<solvers::multicomponentFilm>("solver"))
+        {
+           const auto& solver = mesh.lookupObject<solvers::multicomponentFilm>("solver");
+           thermo_ = &solver.thermo;
+           isFilm_ = true;
+        }
+        else if (mesh.foundObject<solvers::multicomponentFluid>("solver"))
+        {
+           const auto& solver = mesh.lookupObject<solvers::multicomponentFluid>("solver");
+           thermo_ = &solver.thermo;
+           isFilm_ = false;
+        }
+        else
+        {
+           FatalErrorInFunction
+                << "Cannot find either multicomponentFilm or multicomponentFluid object in the mesh registry"
+                << abort(FatalError);
+        }
 
 }
 
@@ -118,33 +118,33 @@ Foam::massTransferRateCoefficientModels::blasius::k()
     forAll(transferCells, facei)
     {
         const label celli = transferCells[facei];
-	const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
+        const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
         
-	//- Calculate correlation coefficients
-	const scalar facePosition = mag((mesh_.C()[celli] - inlet_) & dir_);
+        //- Calculate correlation coefficients
+        const scalar facePosition = mag((mesh_.C()[celli] - inlet_) & dir_);
         const scalar faceRe = rho[facei] * mag(Uboun[facei]) * facePosition / mu[facei];
-	const scalar faceSc = mu[facei] / (rho[facei] * D);
+        const scalar faceSc = mu[facei] / (rho[facei] * D);
 
-	//- Set rate coefficient
+        //- Set rate coefficient
            k_[celli] = C_ * (D / facePosition) * Foam::pow(faceRe, 0.5)
                 * Foam::pow(faceSc, 0.333);
 
-	if (!isFilm_)
+        if (!isFilm_)
         {
-	   const label faceIndex = mesh_.boundary()[patchID_].faceCells()[facei];
+           const label faceIndex = mesh_.boundary()[patchID_].faceCells()[facei];
            // Calculate face area using the mesh object
            const scalar area = mag(mesh_.faceAreas()[faceIndex]);
            faceAreas[facei] = area;
 
-	   patchVelocity += mag(Uboun[facei]) * area;
+           patchVelocity += mag(Uboun[facei]) * area;
            patchMassTransferCoefficient += k_[celli] * area;
            patchArea += area;
-	}
+        }
     }
 
     if (!isFilm_)
     {
-	Info << "Surf averaged mag(Ub): " << patchVelocity / patchArea << endl;
+        Info << "Surf averaged mag(Ub): " << patchVelocity / patchArea << endl;
         Info << "Surf averaged kg: " << patchMassTransferCoefficient / patchArea << endl;
     }
 

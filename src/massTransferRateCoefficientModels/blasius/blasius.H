@@ -59,8 +59,8 @@ class blasius
 {
     // Private Data
 
-	//- Reference to the transferred specie thermo package
-	const fluidMulticomponentThermo* thermo_;
+        //- Reference to the transferred specie thermo package
+        const fluidMulticomponentThermo* thermo_;
 
         //- 1st coefficient of Diffusivity of specie
         const dimensionedScalar D1_;
@@ -77,7 +77,7 @@ class blasius
         //- Direction of flow
         const vector dir_;
 
-	// Boolean flag to identify if it is film
+        // Boolean flag to identify if it is film
         bool isFilm_;
 
 public:

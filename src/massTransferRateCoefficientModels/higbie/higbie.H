@@ -72,10 +72,10 @@ class higbie
         IOdictionary physicalProperties_;
 
         // Surface tension coefficient
-	dimensionedScalar sigma_;
+        dimensionedScalar sigma_;
 
-	// Boolean flag to identify if it is film
-	bool isFilm_;
+        // Boolean flag to identify if it is film
+        bool isFilm_;
 	
 public:
 
