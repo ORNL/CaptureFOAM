@@ -24,22 +24,22 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::massTransferRateCoefficientModels::higbieGas
+    Foam::massTransferRateCoefficientModels::blasius
 
 Description
-    Mass transfer rate coefficient model using Higbie theory
-    
-References
+    Mass transfer rate coefficient model based on Blasius theory.
 
 SourceFiles
-    higbieGas.C
+    blasius.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef higbieGas_H
-#define higbieGas_H
+#ifndef blasius_H
+#define blasius_H
 
+#include "OFstream.H"
 #include "massTransferRateCoefficientModel.H"
+#include "multicomponentFilm.H"
 #include "multicomponentFluid.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -50,34 +50,46 @@ namespace massTransferRateCoefficientModels
 {
 
 /*---------------------------------------------------------------------------*\
-                                 Class higbieGas
+                                 Class blasius
 \*---------------------------------------------------------------------------*/
 
-class higbieGas
+class blasius
 :
     public massTransferRateCoefficientModel
 {
     // Private Data
-    
-        //- The multi-component fluid model
-        const solvers::multicomponentFluid& multicomponentFluid_;
+
+	//- Reference to the transferred specie thermo package
+	const fluidMulticomponentThermo* thermo_;
+
+        //- 1st coefficient of Diffusivity of specie
+        const dimensionedScalar D1_;
         
-        //- Reference to the transferred specie thermo package
-        const fluidMulticomponentThermo& thermo_;
-        
-        //- Diffusivity of specie
-        const scalar D_;
+        //- 2nd coefficient of Diffusivity of specie
+        const dimensionedScalar D2_;
+
+        //- Model coefficient
+        const scalar C_;
+
+        //- Point on inlet patch
+        const vector inlet_;
+
+        //- Direction of flow
+        const vector dir_;
+
+	// Boolean flag to identify if it is film
+        bool isFilm_;
 
 public:
 
     //- Runtime type information
-    TypeName("higbieGas");
+    TypeName("blasius");
 
 
     // Constructors
 
         //- Construct from components
-        higbieGas
+        blasius
         (
             const dictionary& dict,
             const fvMesh& mesh,
@@ -86,7 +98,7 @@ public:
 
 
     //- Destructor
-    virtual ~higbieGas()
+    virtual ~blasius()
     {}
 
 

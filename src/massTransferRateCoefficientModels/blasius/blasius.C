@@ -25,7 +25,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "blasiusFilm.H"
+#include "blasius.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -34,8 +34,8 @@ namespace Foam
 {
 namespace massTransferRateCoefficientModels
 {
-    defineTypeNameAndDebug(blasiusFilm, 0);
-    addToRunTimeSelectionTable(massTransferRateCoefficientModel, blasiusFilm, dictionary);
+    defineTypeNameAndDebug(blasius, 0);
+    addToRunTimeSelectionTable(massTransferRateCoefficientModel, blasius, dictionary);
 }
 }
 
@@ -43,7 +43,7 @@ using Foam::constant::mathematical::pi;
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::massTransferRateCoefficientModels::blasiusFilm::blasiusFilm
+Foam::massTransferRateCoefficientModels::blasius::blasius
 (
     const dictionary& dict,
     const fvMesh& mesh,
@@ -58,21 +58,38 @@ Foam::massTransferRateCoefficientModels::blasiusFilm::blasiusFilm
         patchID
     ),
     
-    multicomponentFilm_(mesh.lookupObject<solvers::multicomponentFilm>(solver::typeName)),
-    thermoFilm_(multicomponentFilm_.thermo),
     D1_(dimArea/dimTime/dimTemperature, rateModelCoeffs_.lookup<scalar>("D1")),
     D2_(dimArea/dimTime, rateModelCoeffs_.lookup<scalar>("D2")),
     C_(rateModelCoeffs_.lookupOrDefault<scalar>("C", 0.332)),
     inlet_(rateModelCoeffs_.lookup<vector>("inlet")),
     dir_(rateModelCoeffs_.lookup<vector>("direction"))
 {
-}
 
+	if (mesh.foundObject<solvers::multicomponentFilm>("solver"))
+	{
+	   const auto& solver = mesh.lookupObject<solvers::multicomponentFilm>("solver");
+    	   thermo_ = &solver.thermo;
+	   isFilm_ = true;
+	}
+	else if (mesh.foundObject<solvers::multicomponentFluid>("solver"))
+	{
+	   const auto& solver = mesh.lookupObject<solvers::multicomponentFluid>("solver");
+    	   thermo_ = &solver.thermo;
+	   isFilm_ = false;
+	}
+	else
+	{
+	    FatalErrorInFunction
+        	<< "Cannot find either multicomponentFilm or multicomponentFluid object in the mesh registry"
+        	<< abort(FatalError);
+	}
+
+}
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 const Foam::volScalarField&
-Foam::massTransferRateCoefficientModels::blasiusFilm::k()
+Foam::massTransferRateCoefficientModels::blasius::k()
 {
     //- Reset rate coefficient to zero
     k_ = Zero;
@@ -85,25 +102,50 @@ Foam::massTransferRateCoefficientModels::blasiusFilm::k()
     const scalarField& Tboun = T.boundaryField()[patchID_];
 
     //- Get density and viscosity fields from solver
-    const volScalarField& rho = thermoFilm_.rho();
-    const volScalarField& mu = thermoFilm_.mu();
+    const volScalarField& rho = thermo_->rho();
+    const volScalarField& mu = thermo_->mu();
 
     //- Loop over cells adjacent to transfer patch
     const labelList& transferCells = mesh_.boundary()[patchID_].faceCells();
-    
+
+    // Create an array to hold the area of the faces
+    scalarField faceAreas(transferCells.size());
+
+    scalar patchVelocity = 0.0;
+    scalar patchMassTransferCoefficient = 0.0;
+    scalar patchArea = 0.0;
+
     forAll(transferCells, facei)
     {
         const label celli = transferCells[facei];
+	const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
         
 	//- Calculate correlation coefficients
-	const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
 	const scalar facePosition = mag((mesh_.C()[celli] - inlet_) & dir_);
         const scalar faceRe = rho[facei] * mag(Uboun[facei]) * facePosition / mu[facei];
 	const scalar faceSc = mu[facei] / (rho[facei] * D);
 
-        //- Set rate coefficient
-        k_[celli] = C_ * (D / facePosition) * Foam::pow(faceRe, 0.5)
+	//- Set rate coefficient
+           k_[celli] = C_ * (D / facePosition) * Foam::pow(faceRe, 0.5)
                 * Foam::pow(faceSc, 0.333);
+
+	if (!isFilm_)
+        {
+	   const label faceIndex = mesh_.boundary()[patchID_].faceCells()[facei];
+           // Calculate face area using the mesh object
+           const scalar area = mag(mesh_.faceAreas()[faceIndex]);
+           faceAreas[facei] = area;
+
+	   patchVelocity += mag(Uboun[facei]) * area;
+           patchMassTransferCoefficient += k_[celli] * area;
+           patchArea += area;
+	}
+    }
+
+    if (!isFilm_)
+    {
+	Info << "Surf averaged mag(Ub): " << patchVelocity / patchArea << endl;
+        Info << "Surf averaged kg: " << patchMassTransferCoefficient / patchArea << endl;
     }
 
     return k_;

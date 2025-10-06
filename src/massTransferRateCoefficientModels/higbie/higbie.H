@@ -24,22 +24,23 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::massTransferRateCoefficientModels::blasiusFilm
+    Foam::massTransferRateCoefficientModels::higbie
 
 Description
-    Mass transfer rate coefficient model based on Blasius theory.
+    Mass transfer rate coefficient model based on Higbie penetration theory.
 
 SourceFiles
-    blasiusFilm.C
+    higbie.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef blasiusFilm_H
-#define blasiusFilm_H
+#ifndef higbie_H
+#define higbie_H
 
 #include "OFstream.H"
 #include "massTransferRateCoefficientModel.H"
 #include "multicomponentFilm.H"
+#include "multicomponentFluid.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -49,20 +50,17 @@ namespace massTransferRateCoefficientModels
 {
 
 /*---------------------------------------------------------------------------*\
-                                 Class blasiusFilm
+                                 Class higbie
 \*---------------------------------------------------------------------------*/
 
-class blasiusFilm
+class higbie
 :
     public massTransferRateCoefficientModel
 {
     // Private Data
 
-        //- The multi-component fluid model
-        const solvers::multicomponentFilm& multicomponentFilm_;
-
         //- Reference to the transferred specie thermo package
-        const fluidMulticomponentThermo& thermoFilm_;
+        const fluidMulticomponentThermo* thermo_;
 
         //- 1st coefficient of Diffusivity of specie
         const dimensionedScalar D1_;
@@ -70,25 +68,25 @@ class blasiusFilm
         //- 2nd coefficient of Diffusivity of specie
         const dimensionedScalar D2_;
 
-        //- Model coefficient
-        const scalar C_;
+        // Dictionary to get value of sigma
+        IOdictionary physicalProperties_;
 
-        //- Point on inlet patch
-        const vector inlet_;
-        
-        //- Direction of flow
-        const vector dir_;
+        // Surface tension coefficient
+	dimensionedScalar sigma_;
 
+	// Boolean flag to identify if it is film
+	bool isFilm_;
+	
 public:
 
     //- Runtime type information
-    TypeName("blasiusFilm");
+    TypeName("higbie");
 
 
     // Constructors
 
         //- Construct from components
-        blasiusFilm
+        higbie
         (
             const dictionary& dict,
             const fvMesh& mesh,
@@ -97,7 +95,7 @@ public:
 
 
     //- Destructor
-    virtual ~blasiusFilm()
+    virtual ~higbie()
     {}
 
 
