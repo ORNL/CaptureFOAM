@@ -73,7 +73,7 @@ namespace enhancementModels
 	  dimensionedScalar Dmeacoo(dimArea/dimTime, 1.5e-9);	  
 
 	  volScalarField num = Foam::sqrt(Keq) * C1 * (Dmeacoo / D_);
-	  volScalarField denom = (1.0 + (2.0 * Dmeacoo / Dmea)) * Foam::sqrt(Keq * Cco2) * (Foam::sqrt(Cco2) + Foam::sqrt(Cco2));
+	  volScalarField denom = (1.0 + (2.0 * Dmeacoo / Dmea)) * Foam::sqrt(Keq * Cco2) * (Foam::sqrt(Cco2b) + Foam::sqrt(Cco2));
 
 	  Einf_ = 1.0 + (num / denom);
 	}
@@ -98,7 +98,7 @@ namespace enhancementModels
           dimensionedScalar Dksarcoo(dimArea/dimTime, 1.0e-9);
 
 	  volScalarField num = Foam::sqrt(Keq) * C1 * (Dksarcoo / D_);
-	  volScalarField denom = (1.0 + (2.0 * Dksarcoo / Dksar)) * Foam::sqrt(Keq * Cco2) * (Foam::sqrt(Cco2) + Foam::sqrt(Cco2));
+	  volScalarField denom = (1.0 + (2.0 * Dksarcoo / Dksar)) * Foam::sqrt(Keq * Cco2) * (Foam::sqrt(Cco2b) + Foam::sqrt(Cco2));
 
 	  Einf_ = 1.0 + (num / denom);
 	}
