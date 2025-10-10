@@ -74,6 +74,9 @@ class thompsonTsouris
 	//- Instantaneous enhancement factor
 	volScalarField Einf_;
 
+	//- Index of mass transfer patch in film mesh
+        const label filmPatchID_;
+
 public:
 
     //- Runtime type information
@@ -88,7 +91,8 @@ public:
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
             const solvers::multicomponentFluid& fluid,
-            const label& filmSpecieID
+            const label& filmSpecieID,
+	    const label& bulkPatchID
         );
 
 

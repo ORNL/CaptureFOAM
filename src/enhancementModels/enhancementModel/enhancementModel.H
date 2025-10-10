@@ -86,6 +86,9 @@ protected:
 	//- Pointer to bulk mesh instance
         const fvMesh& bulkMesh_;
 
+	//- Index of mass transfer patch in bulk mesh
+        const label bulkPatchID_;
+
 public:
 
     //- Runtime type information
@@ -101,9 +104,10 @@ public:
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
             const solvers::multicomponentFluid& fluid,
-            const label& filmSpecieID
+            const label& filmSpecieID,
+	    const label& bulkPatchID
         ),
-        (dict, film, fluid, filmSpecieID)
+        (dict, film, fluid, filmSpecieID, bulkPatchID)
     );
 
 
@@ -116,7 +120,8 @@ public:
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
             const solvers::multicomponentFluid& fluid,
-            const label& filmSpecieID
+            const label& filmSpecieID,
+	    const label& bulkPatchID
         );
         
         //- Disallow default bitwise copy construction
@@ -130,7 +135,8 @@ public:
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
             const solvers::multicomponentFluid& fluid,
-            const label& filmSpecieID
+            const label& filmSpecieID,
+	    const label& bulkPatchID
         );
 
     //- Destructor
