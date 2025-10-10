@@ -103,7 +103,8 @@ Foam::interphaseMassTransferModels::physical::physical
             massTransferModelCoeffs_,
             film_,
             fluid_,
-            filmSpecieID_
+            filmSpecieID_,
+	    bulkPatchID_
         );
 }
 

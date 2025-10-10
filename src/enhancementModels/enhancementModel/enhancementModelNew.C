@@ -34,7 +34,8 @@ Foam::autoPtr<Foam::enhancementModel> Foam::enhancementModel::New
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
     const solvers::multicomponentFluid& fluid,
-    const label& filmSpecieID
+    const label& filmSpecieID,
+    const label& bulkPatchID
 )
 {
     //- Initialize modelType to a non-model word
@@ -57,7 +58,7 @@ Foam::autoPtr<Foam::enhancementModel> Foam::enhancementModel::New
             << exit(FatalError);
     }
 
-    return autoPtr<enhancementModel>(cstrIter()(dict, film, fluid, filmSpecieID));
+    return autoPtr<enhancementModel>(cstrIter()(dict, film, fluid, filmSpecieID, bulkPatchID));
 }
 
 

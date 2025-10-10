@@ -46,7 +46,8 @@ Foam::enhancementModels::noEnhancement::noEnhancement
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
     const solvers::multicomponentFluid& fluid,
-    const label& filmSpecieID
+    const label& filmSpecieID,
+    const label& bulkPatchID
 )
 :
     enhancementModel
@@ -55,7 +56,8 @@ Foam::enhancementModels::noEnhancement::noEnhancement
         dict,
         film,
         fluid,
-        filmSpecieID
+        filmSpecieID,
+	bulkPatchID
     )
 {
 }

@@ -29,6 +29,7 @@ License
 #include "addToRunTimeSelectionTable.H"
 #include "volFields.H"
 #include <iostream>
+#include "OFstream.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -49,9 +50,22 @@ namespace enhancementModels
 	const dimensionedScalar Wco2(dimMass/dimMoles, 44.0);
 	const volScalarField Cco2 = (rho * CO2 / Wco2) + eps;
 
-	const volScalarField& rhobulk = bulkMesh_.lookupObject<volScalarField>("rho");
-	const volScalarField& CO2bulk = bulkMesh_.lookupObject<volScalarField>("CO2");
-	const volScalarField Cco2b = (rhobulk * CO2bulk / Wco2) + eps;
+	const fvPatchScalarField& rhobulkPatch = bulkMesh_.lookupObject<volScalarField>("rho").boundaryField()[bulkPatchID_];
+	const fvPatchScalarField& CO2bulkPatch = bulkMesh_.lookupObject<volScalarField>("CO2").boundaryField()[bulkPatchID_];
+	const scalarField Cco2bPatch = (rhobulkPatch * CO2bulkPatch / Wco2.value()) + eps.value();
+
+	volScalarField Cco2b
+	(
+    		IOobject
+    		(
+        		"Cco2b",
+        		filmMesh_.time().name(),
+        		filmMesh_
+    		),
+    		filmMesh_,
+    		dimensionedScalar(dimMoles/dimVolume, 0.0)
+	);
+	Cco2b.boundaryFieldRef()[filmPatchID_] = Cco2bPatch;
 
 	if (filmMesh_.foundObject<volScalarField>("MEA"))
 	{
@@ -124,7 +138,8 @@ Foam::enhancementModels::thompsonTsouris::thompsonTsouris
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
     const solvers::multicomponentFluid& fluid,
-    const label& filmSpecieID
+    const label& filmSpecieID,
+    const label& bulkPatchID
 )
 :
     enhancementModel
@@ -133,7 +148,8 @@ Foam::enhancementModels::thompsonTsouris::thompsonTsouris
         dict,
         film,
         fluid,
-        filmSpecieID
+        filmSpecieID,
+	bulkPatchID
     ),
 
     D1_(dimArea/dimTime/dimTemperature, massTransferModelCoeffs_.lookup<scalar>("Dl1")),
@@ -167,7 +183,9 @@ Foam::enhancementModels::thompsonTsouris::thompsonTsouris
 	),
 	filmMesh_,
 	dimensionedScalar(dimless, 0.01)
-    )
+    ),
+
+    filmPatchID_(film_.surfacePatch().index())
 
 {
 }
@@ -187,7 +205,6 @@ void Foam::enhancementModels::thompsonTsouris::update()
 
     dimensionedScalar D1(dimArea/dimTime/dimTemperature, D1_.value());
     dimensionedScalar D2(dimArea/dimTime, D2_.value());
-   // const volScalarField D = (D1 * Tf) + D2;
     D_ = (D1 * Tf) + D2;
 
     //- Set E
@@ -201,9 +218,7 @@ void Foam::enhancementModels::thompsonTsouris::update()
 		+ (1.0 / Foam::pow(Einf_ - 1.0, 1.35));
 
         E_ = 1.0 + (1.0 / Foam::pow(denom, 0.74));
-  
-//	E_ = Einf_;
-//	Info << "E_: " << E_ << " at time: " << filmMesh_.time().value() << endl;
+
     }
 }
 
