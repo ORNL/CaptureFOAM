@@ -79,7 +79,7 @@ void Foam::enhancementModels::filmPseudoFirstOrder::update()
     //- Set E = Ha / tanh(Ha)
     if (filmMesh_.time().value() >= tStart_)
     {
-	const volScalarField Ha = (D * enhancementModel::kApp() / Foam::pow(klLim,2));
+        const volScalarField Ha = (D * enhancementModel::kApp() / Foam::pow(klLim,2));
 
         E_ = Ha / Foam::tanh(Ha);
     }

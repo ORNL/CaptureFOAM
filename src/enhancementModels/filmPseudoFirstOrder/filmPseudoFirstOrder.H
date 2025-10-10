@@ -69,7 +69,7 @@ class filmPseudoFirstOrder
         //- 1st coefficient of Diffusivity of specie in liquid
         const dimensionedScalar D1_;
 
-	//- 2nd coefficient of Diffusivity of specie in liquid
+        //- 2nd coefficient of Diffusivity of specie in liquid
         const dimensionedScalar D2_;
 
         //- Time to turn enhancement on
