@@ -42,7 +42,9 @@ Foam::enhancementModel::enhancementModel
     const word& type,
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
-    const label& filmSpecieID
+    const solvers::multicomponentFluid& fluid,
+    const label& filmSpecieID,
+    const label& bulkPatchID
 )
 :
     massTransferModelCoeffs_(dict.optionalSubDict(type + "Coeffs")),
@@ -74,7 +76,10 @@ Foam::enhancementModel::enhancementModel
         ),
         filmMesh_,
         dimensionedScalar(dimless / dimTime, 1.0)
-    )
+    ),
+    fluid_(fluid),
+    bulkMesh_(fluid_.p.mesh()),
+    bulkPatchID_(bulkPatchID)
 {
 }
 

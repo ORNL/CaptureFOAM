@@ -43,6 +43,7 @@ SourceFiles
 #include "dictionary.H"
 #include "volFields.H"
 #include "multicomponentFilm.H"
+#include "multicomponentFluid.H"
 #include "fvc.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -79,6 +80,15 @@ protected:
         //- Apparent reaction rate
         volScalarField kApp_;
 
+	//- Pointer to bulk phase instance
+        const solvers::multicomponentFluid& fluid_;
+
+	//- Pointer to bulk mesh instance
+        const fvMesh& bulkMesh_;
+
+	//- Index of mass transfer patch in bulk mesh
+        const label bulkPatchID_;
+
 public:
 
     //- Runtime type information
@@ -93,9 +103,11 @@ public:
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
-            const label& filmSpecieID
+            const solvers::multicomponentFluid& fluid,
+            const label& filmSpecieID,
+	    const label& bulkPatchID
         ),
-        (dict, film, filmSpecieID)
+        (dict, film, fluid, filmSpecieID, bulkPatchID)
     );
 
 
@@ -107,7 +119,9 @@ public:
             const word& type,
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
-            const label& filmSpecieID
+            const solvers::multicomponentFluid& fluid,
+            const label& filmSpecieID,
+	    const label& bulkPatchID
         );
         
         //- Disallow default bitwise copy construction
@@ -120,7 +134,9 @@ public:
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
-            const label& filmSpecieID
+            const solvers::multicomponentFluid& fluid,
+            const label& filmSpecieID,
+	    const label& bulkPatchID
         );
 
     //- Destructor
