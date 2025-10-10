@@ -24,26 +24,28 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::interphaseMassTransferModels::pseudoFirstOrder
+    Foam::interphaseMassTransferModels::surfaceRenewalPseudoFirstOrder
 
 Description
-    Enhancement factor according to the penetration model
+    Enhancement factor for a pseudo-first order irreversible
+    reaction based on the surface renewal theory
     where E = sqrt(1 + Ha^2). Model more appropriate for 
     3 < Ha < E_inf;
 
-    Reference:
-    Aronu, UE, Hartono, A., Hoff, K. A., & Svendsen, H. F. (2011). 
-    Kinetics of carbon dioxide absorption into aqueous amino acid salt: 
-    potassium salt of sarcosine solution. 
-    Industrial & engineering chemistry research , 50 (18), 10465-10475.
+    References
+    [1] Putta, K. R., Tobiesen, F. A., Svendsen, H. F., & Knuutila, H. K. (2017). 
+    Applicability of enhancement factor models for CO2 absorption into aqueous MEA solutions. 
+    Applied Energy, 206, 765-783.
+
+    [2] Danckwerts PV. Gas-liquid reactions. McGraw-Hill; 1970.
 
 SourceFiles
-    pseudoFirstOrder.C
+    surfaceRenewalPseudoFirstOrder.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef pseudoFirstOrder_H
-#define pseudoFirstOrder_H
+#ifndef surfaceRenewalPseudoFirstOrder_H
+#define surfaceRenewalPseudoFirstOrder_H
 
 #include "enhancementModel.H"
 
@@ -55,10 +57,10 @@ namespace enhancementModels
 {
 
 /*---------------------------------------------------------------------------*\
-                                  Class pseudoFirstOrder
+                                  Class surfaceRenewalPseudoFirstOrder
 \*---------------------------------------------------------------------------*/
 
-class pseudoFirstOrder
+class surfaceRenewalPseudoFirstOrder
 :
     public enhancementModel
 {
@@ -76,13 +78,13 @@ class pseudoFirstOrder
 public:
 
     //- Runtime type information
-    TypeName("pseudoFirstOrder");
+    TypeName("surfaceRenewalPseudoFirstOrder");
 
 
     // Constructors
 
         //- Construct from components
-        pseudoFirstOrder
+        surfaceRenewalPseudoFirstOrder
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
@@ -91,7 +93,7 @@ public:
 
 
     //- Destructor
-    virtual ~pseudoFirstOrder()
+    virtual ~surfaceRenewalPseudoFirstOrder()
     {}
 
 
