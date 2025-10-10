@@ -4,5 +4,6 @@ enhancementModel/enhancementModelNew.C
 noEnhancement/noEnhancement.C
 lowHa/lowHa.C
 surfaceRenewalPseudoFirstOrder/surfaceRenewalPseudoFirstOrder.C
+filmPseudoFirstOrder/filmPseudoFirstOrder.C
 
 LIB = $(FOAM_USER_LIBBIN)/libenhancementModels
