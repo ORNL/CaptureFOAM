@@ -1,0 +1,118 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2022 OpenFOAM Foundation
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+                Copyright (C) 2023 Oak Ridge National Laboratory                
+-------------------------------------------------------------------------------
+License
+    This file is part of OpenFOAM.
+
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+Class
+    Foam::interphaseMassTransferModels::penetrationPseudoFirstOrder
+
+Description
+    Enhancement factor according to the penetration model
+    where E = Ha[{1 + pi/8*Ha^2}*erf{sqrt(4*Ha^2/pi)} + exp(4*Ha^2/pi)/2*Ha]. 
+    Model more appropriate for 3 < Ha < E_inf;
+
+    References
+    [1] Putta, K. R., Tobiesen, F. A., Svendsen, H. F., & Knuutila, H. K. (2017). 
+    Applicability of enhancement factor models for CO2 absorption into aqueous MEA solutions. 
+    Applied Energy, 206, 765-783.
+
+    [2] Danckwerts PV. Gas-liquid reactions. McGraw-Hill; 1970.
+
+SourceFiles
+    penetrationPseudoFirstOrder.C
+
+\*---------------------------------------------------------------------------*/
+
+#ifndef penetrationPseudoFirstOrder_H
+#define penetrationPseudoFirstOrder_H
+
+#include "enhancementModel.H"
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+namespace Foam
+{
+namespace enhancementModels
+{
+
+/*---------------------------------------------------------------------------*\
+                                  Class penetrationPseudoFirstOrder
+\*---------------------------------------------------------------------------*/
+
+class penetrationPseudoFirstOrder
+:
+    public enhancementModel
+{
+    // Private Data
+
+        //- 1st coefficient of Diffusivity of specie in liquid
+        const dimensionedScalar D1_;
+
+	//- 2nd coefficient of Diffusivity of specie in liquid
+        const dimensionedScalar D2_;
+
+        //- Time to turn enhancement on
+        const scalar tStart_;
+
+public:
+
+    //- Runtime type information
+    TypeName("penetrationPseudoFirstOrder");
+
+
+    // Constructors
+
+        //- Construct from components
+        penetrationPseudoFirstOrder
+        (
+            const dictionary& dict,
+            const solvers::multicomponentFilm& film,
+            const label& filmSpecieID
+        );
+
+
+    //- Destructor
+    virtual ~penetrationPseudoFirstOrder()
+    {}
+
+
+    // Member Functions
+    
+        //- Update mass transfer field
+        virtual void update();
+
+        //- Read the dictionary
+        virtual bool read();
+};
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+} // End namespace interphaseMassTransferModels
+} // End namespace Foam
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#endif
+
+// ************************************************************************* //

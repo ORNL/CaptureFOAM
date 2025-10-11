@@ -1,0 +1,107 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Copyright (C) 2011-2022 OpenFOAM Foundation
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+                Copyright (C) 2023 Oak Ridge National Laboratory                
+-------------------------------------------------------------------------------
+License
+    This file is part of OpenFOAM.
+
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
+
+\*---------------------------------------------------------------------------*/
+
+#include "penetrationPseudoFirstOrder.H"
+#include "addToRunTimeSelectionTable.H"
+
+// * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
+
+namespace Foam
+{
+namespace enhancementModels
+{
+    defineTypeNameAndDebug(penetrationPseudoFirstOrder, 0);
+    addToRunTimeSelectionTable(enhancementModel, penetrationPseudoFirstOrder, dictionary);
+}
+}
+
+using Foam::constant::mathematical::pi;
+
+// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
+
+Foam::enhancementModels::penetrationPseudoFirstOrder::penetrationPseudoFirstOrder
+(
+    const dictionary& dict,
+    const solvers::multicomponentFilm& film,
+    const label& filmSpecieID
+)
+:
+    enhancementModel
+    (
+        typeName,
+        dict,
+        film,
+        filmSpecieID
+    ),
+    
+    D1_(dimArea/dimTime/dimTemperature, massTransferModelCoeffs_.lookup<scalar>("Dl1")),
+    D2_(dimArea/dimTime, massTransferModelCoeffs_.lookup<scalar>("Dl2")),
+    tStart_(massTransferModelCoeffs_.lookupOrDefault<scalar>("tStart", 0.0))
+{
+}
+
+
+// * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
+
+void Foam::enhancementModels::penetrationPseudoFirstOrder::update()
+{
+    //- Look up film-side mass transfer rate coefficient field
+    const volScalarField& k_l = filmMesh_.lookupObject<volScalarField>("k");
+    const volScalarField& Tf = filmMesh_.lookupObject<volScalarField>("T");
+
+    const volScalarField klLim
+        = max(k_l, dimensionedScalar(dimVelocity, 1e-8));
+
+    const volScalarField D = (D1_ * Tf) + D2_;  
+
+    //- Set E = Ha[{1 + pi/8*Ha^2}*erf{sqrt(4*Ha^2/pi)} + exp(4*Ha^2/pi)/2*Ha]
+    if (filmMesh_.time().value() >= tStart_)
+    {
+        const volScalarField Ha = (D * enhancementModel::kApp() / Foam::pow(klLim,2));	    
+
+        E_ = (1.0 + (pi/(8.0 * Foam::pow(Ha,2)))) * Foam::erf(Ha * Foam::pow(4.0/pi,0.5));
+	E_ += 0.5 * Foam::exp(4.0 * Foam::pow(Ha,2) / pi) / Ha;
+	E_ *= Ha;
+
+    }
+}
+
+
+bool Foam::enhancementModels::penetrationPseudoFirstOrder::read()
+{
+    if (enhancementModel::read())
+    {
+        return true;
+    }
+    
+    else
+    {
+        return false;
+    }
+}
+
+// ************************************************************************* //
