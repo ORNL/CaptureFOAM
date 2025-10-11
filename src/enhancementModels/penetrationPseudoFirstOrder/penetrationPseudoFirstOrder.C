@@ -84,8 +84,8 @@ void Foam::enhancementModels::penetrationPseudoFirstOrder::update()
         const volScalarField Ha = (D * enhancementModel::kApp() / Foam::pow(klLim,2));	    
 
         E_ = (1.0 + (pi/(8.0 * Foam::pow(Ha,2)))) * Foam::erf(Ha * Foam::pow(4.0/pi,0.5));
-	E_ += 0.5 * Foam::exp(4.0 * Foam::pow(Ha,2) / pi) / Ha;
-	E_ *= Ha;
+        E_ += 0.5 * Foam::exp(4.0 * Foam::pow(Ha,2) / pi) / Ha;
+        E_ *= Ha;
 
     }
 }
