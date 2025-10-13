@@ -83,7 +83,7 @@ Foam::massTransferRateCoefficientModels::Blasius::Blasius
         {
            FatalErrorInFunction
                 << "Cannot find either multicomponentFilm or"
-		<< " multicomponentFluid object in the mesh registry"
+                << " multicomponentFluid object in the mesh registry"
                 << abort(FatalError);
         }
 
@@ -126,7 +126,7 @@ Foam::massTransferRateCoefficientModels::Blasius::k()
         //- Calculate correlation coefficients
         const scalar facePosition = mag((mesh_.C()[celli] - inlet_) & dir_);
         const scalar faceRe = rho[facei] * mag(Uboun[facei]) * facePosition 
-		/ mu[facei];
+                               / mu[facei];
         const scalar faceSc = mu[facei] / (rho[facei] * D);
 
         //- Set rate coefficient
@@ -136,7 +136,7 @@ Foam::massTransferRateCoefficientModels::Blasius::k()
         if (!isFilm_)
         {
            const label faceIndex = 
-		   mesh_.boundary()[patchID_].faceCells()[facei];
+                               mesh_.boundary()[patchID_].faceCells()[facei];
            // Calculate face area using the mesh object
            const scalar area = mag(mesh_.faceAreas()[faceIndex]);
            faceAreas[facei] = area;
@@ -151,7 +151,7 @@ Foam::massTransferRateCoefficientModels::Blasius::k()
     {
         Info << "Surf averaged mag(Ub): " << patchVelocity / patchArea << endl;
         Info << "Surf averaged kg: " << patchMassTransferCoefficient 
-		/ patchArea << endl;
+                               / patchArea << endl;
     }
 
     return k_;

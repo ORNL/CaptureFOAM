@@ -79,17 +79,17 @@ Foam::massTransferRateCoefficientModels::Higbie::Higbie
 	if (mesh.foundObject<solvers::multicomponentFilm>("solver"))
         {
            const auto& solver = 
-		   mesh.lookupObject<solvers::multicomponentFilm>("solver");
+                   mesh.lookupObject<solvers::multicomponentFilm>("solver");
            thermo_ = &solver.thermo;
 
-	   if (physicalProperties_.found("sigma"))
+           if (physicalProperties_.found("sigma"))
            {
               sigma_ = dimensionedScalar("sigma", dimForce/dimLength, 
-			      physicalProperties_.subDict("sigma"));
+			       physicalProperties_.subDict("sigma"));
            }
            else
            {
-	      FatalErrorInFunction
+              FatalErrorInFunction
                 << "sigma not found in Film physicalProperties"
                 << abort(FatalError);
            }
@@ -99,7 +99,7 @@ Foam::massTransferRateCoefficientModels::Higbie::Higbie
         else if (mesh.foundObject<solvers::multicomponentFluid>("solver"))
         {
            const auto& solver = 
-		   mesh.lookupObject<solvers::multicomponentFluid>("solver");
+                   mesh.lookupObject<solvers::multicomponentFluid>("solver");
            thermo_ = &solver.thermo;
            isFilm_ = false;
         }
@@ -107,7 +107,7 @@ Foam::massTransferRateCoefficientModels::Higbie::Higbie
         {
             FatalErrorInFunction
                 << "Cannot find either multicomponentFilm or" 
-		<< " multicomponentFluid object in the mesh registry"
+                << " multicomponentFluid object in the mesh registry"
                 << abort(FatalError);
         }
 }
@@ -156,7 +156,7 @@ Foam::massTransferRateCoefficientModels::Higbie::k()
            const scalar Ui = max(mag(Uboun[facei]), 1e-12);
            const scalar tau_conv = max(L / Ui, 1e-12);
            const scalar tau_cap = Foam::pow(rho[facei] * Foam::pow(L, 3.0) 
-			/ sigma_.value(), 0.5);
+                               / sigma_.value(), 0.5);
            const scalar tau = min(tau_conv, tau_cap);
 
            //- Set rate coefficient
@@ -165,7 +165,7 @@ Foam::massTransferRateCoefficientModels::Higbie::k()
         else
         {
            const label faceIndex = 
-		   mesh_.boundary()[patchID_].faceCells()[facei];
+                               mesh_.boundary()[patchID_].faceCells()[facei];
            // Calculate face area using the mesh object
            const scalar area = mag(mesh_.faceAreas()[faceIndex]);
            faceAreas[facei] = area;
@@ -187,7 +187,7 @@ Foam::massTransferRateCoefficientModels::Higbie::k()
     {
         Info << "Surf averaged mag(Ub): " << patchVelocity / patchArea << endl;
         Info << "Surf averaged kg: " << patchMassTransferCoefficient 
-		/ patchArea << endl;
+                               / patchArea << endl;
     }
 
     return k_;
