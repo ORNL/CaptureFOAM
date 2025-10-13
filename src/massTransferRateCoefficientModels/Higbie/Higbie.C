@@ -25,7 +25,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "blasius.H"
+#include "Higbie.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -34,8 +34,9 @@ namespace Foam
 {
 namespace massTransferRateCoefficientModels
 {
-    defineTypeNameAndDebug(blasius, 0);
-    addToRunTimeSelectionTable(massTransferRateCoefficientModel, blasius, dictionary);
+    defineTypeNameAndDebug(Higbie, 0);
+    addToRunTimeSelectionTable(massTransferRateCoefficientModel, Higbie, 
+		    dictionary);
 }
 }
 
@@ -43,7 +44,7 @@ using Foam::constant::mathematical::pi;
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::massTransferRateCoefficientModels::blasius::blasius
+Foam::massTransferRateCoefficientModels::Higbie::Higbie
 (
     const dictionary& dict,
     const fvMesh& mesh,
@@ -57,57 +58,82 @@ Foam::massTransferRateCoefficientModels::blasius::blasius
         mesh,
         patchID
     ),
-    
+
     D1_(dimArea/dimTime/dimTemperature, rateModelCoeffs_.lookup<scalar>("D1")),
     D2_(dimArea/dimTime, rateModelCoeffs_.lookup<scalar>("D2")),
-    C_(rateModelCoeffs_.lookupOrDefault<scalar>("C", 0.332)),
-    inlet_(rateModelCoeffs_.lookup<vector>("inlet")),
-    dir_(rateModelCoeffs_.lookup<vector>("direction"))
+    physicalProperties_
+    (
+        IOobject
+        (
+            "physicalProperties",
+            mesh.time().constant(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    ),
+    sigma_("sigma", dimForce/dimLength, 0.0)
+
 {
 
-        if (mesh.foundObject<solvers::multicomponentFilm>("solver"))
+	if (mesh.foundObject<solvers::multicomponentFilm>("solver"))
         {
-           const auto& solver = mesh.lookupObject<solvers::multicomponentFilm>("solver");
+           const auto& solver = 
+		   mesh.lookupObject<solvers::multicomponentFilm>("solver");
            thermo_ = &solver.thermo;
+
+	   if (physicalProperties_.found("sigma"))
+           {
+              sigma_ = dimensionedScalar("sigma", dimForce/dimLength, 
+			      physicalProperties_.subDict("sigma"));
+           }
+           else
+           {
+	      FatalErrorInFunction
+                << "sigma not found in Film physicalProperties"
+                << abort(FatalError);
+           }
+	   
            isFilm_ = true;
         }
         else if (mesh.foundObject<solvers::multicomponentFluid>("solver"))
         {
-           const auto& solver = mesh.lookupObject<solvers::multicomponentFluid>("solver");
+           const auto& solver = 
+		   mesh.lookupObject<solvers::multicomponentFluid>("solver");
            thermo_ = &solver.thermo;
            isFilm_ = false;
         }
         else
         {
-           FatalErrorInFunction
-                << "Cannot find either multicomponentFilm or multicomponentFluid object in the mesh registry"
+            FatalErrorInFunction
+                << "Cannot find either multicomponentFilm or" 
+		<< " multicomponentFluid object in the mesh registry"
                 << abort(FatalError);
         }
-
 }
+
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
 const Foam::volScalarField&
-Foam::massTransferRateCoefficientModels::blasius::k()
+Foam::massTransferRateCoefficientModels::Higbie::k()
 {
     //- Reset rate coefficient to zero
     k_ = Zero;
 
-    //- Look up fields from mesh
+    //- Look up velocity field from mesh
     const volVectorField& U = mesh_.lookupObject<volVectorField>("U");
     const vectorField& Uboun = U.boundaryField()[patchID_];
 
     const volScalarField& T = mesh_.lookupObject<volScalarField>("T");
     const scalarField& Tboun = T.boundaryField()[patchID_];
 
-    //- Get density and viscosity fields from solver
+    //- Get density field from solver
     const volScalarField& rho = thermo_->rho();
-    const volScalarField& mu = thermo_->mu();
-
+    
     //- Loop over cells adjacent to transfer patch
     const labelList& transferCells = mesh_.boundary()[patchID_].faceCells();
-
+    
     // Create an array to hold the area of the faces
     scalarField faceAreas(transferCells.size());
 
@@ -119,24 +145,39 @@ Foam::massTransferRateCoefficientModels::blasius::k()
     {
         const label celli = transferCells[facei];
         const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
-        
-        //- Calculate correlation coefficients
-        const scalar facePosition = mag((mesh_.C()[celli] - inlet_) & dir_);
-        const scalar faceRe = rho[facei] * mag(Uboun[facei]) * facePosition / mu[facei];
-        const scalar faceSc = mu[facei] / (rho[facei] * D);
 
-        //- Set rate coefficient
-           k_[celli] = C_ * (D / facePosition) * Foam::pow(faceRe, 0.5)
-                * Foam::pow(faceSc, 0.333);
-
-        if (!isFilm_)
+        //- Calculate contact time based on smallest eddies
+        if (isFilm_)
         {
-           const label faceIndex = mesh_.boundary()[patchID_].faceCells()[facei];
+           const volScalarField& delta = 
+		   mesh_.lookupObject<volScalarField>("delta");
+
+           const scalar L = delta[celli];
+           const scalar Ui = max(mag(Uboun[facei]), 1e-12);
+           const scalar tau_conv = max(L / Ui, 1e-12);
+           const scalar tau_cap = Foam::pow(rho[facei] * Foam::pow(L, 3.0) 
+			/ sigma_.value(), 0.5);
+           const scalar tau = min(tau_conv, tau_cap);
+
+           //- Set rate coefficient
+           k_[celli] = 2.0 * Foam::sqrt(D / pi / tau);
+        }
+        else
+        {
+           const label faceIndex = 
+		   mesh_.boundary()[patchID_].faceCells()[facei];
            // Calculate face area using the mesh object
            const scalar area = mag(mesh_.faceAreas()[faceIndex]);
            faceAreas[facei] = area;
 
-           patchVelocity += mag(Uboun[facei]) * area;
+           const scalar L = Foam::pow(area, 0.5);
+           const scalar Ui = mag(Uboun[facei]);
+           const scalar tau = max(L / Ui, 1e-12);
+
+           //- Set rate coefficient
+           k_[celli] = 2.0 * Foam::sqrt(D / pi / tau);
+
+           patchVelocity += Ui * area;
            patchMassTransferCoefficient += k_[celli] * area;
            patchArea += area;
         }
@@ -145,7 +186,8 @@ Foam::massTransferRateCoefficientModels::blasius::k()
     if (!isFilm_)
     {
         Info << "Surf averaged mag(Ub): " << patchVelocity / patchArea << endl;
-        Info << "Surf averaged kg: " << patchMassTransferCoefficient / patchArea << endl;
+        Info << "Surf averaged kg: " << patchMassTransferCoefficient 
+		/ patchArea << endl;
     }
 
     return k_;

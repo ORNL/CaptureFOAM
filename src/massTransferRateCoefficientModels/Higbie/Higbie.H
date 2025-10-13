@@ -24,20 +24,19 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::massTransferRateCoefficientModels::higbie
+    Foam::massTransferRateCoefficientModels::Higbie
 
 Description
     Mass transfer rate coefficient model based on Higbie penetration theory.
 
 SourceFiles
-    higbie.C
+    Higbie.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef higbie_H
-#define higbie_H
+#ifndef Higbie_H
+#define Higbie_H
 
-#include "OFstream.H"
 #include "massTransferRateCoefficientModel.H"
 #include "multicomponentFilm.H"
 #include "multicomponentFluid.H"
@@ -50,10 +49,10 @@ namespace massTransferRateCoefficientModels
 {
 
 /*---------------------------------------------------------------------------*\
-                                 Class higbie
+                                 Class Higbie
 \*---------------------------------------------------------------------------*/
 
-class higbie
+class Higbie
 :
     public massTransferRateCoefficientModel
 {
@@ -80,13 +79,13 @@ class higbie
 public:
 
     //- Runtime type information
-    TypeName("higbie");
+    TypeName("Higbie");
 
 
     // Constructors
 
         //- Construct from components
-        higbie
+        Higbie
         (
             const dictionary& dict,
             const fvMesh& mesh,
@@ -95,7 +94,7 @@ public:
 
 
     //- Destructor
-    virtual ~higbie()
+    virtual ~Higbie()
     {}
 
 

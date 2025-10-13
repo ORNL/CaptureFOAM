@@ -24,20 +24,19 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::massTransferRateCoefficientModels::blasius
+    Foam::massTransferRateCoefficientModels::Blasius
 
 Description
     Mass transfer rate coefficient model based on Blasius theory.
 
 SourceFiles
-    blasius.C
+    Blasius.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef blasius_H
-#define blasius_H
+#ifndef Blasius_H
+#define Blasius_H
 
-#include "OFstream.H"
 #include "massTransferRateCoefficientModel.H"
 #include "multicomponentFilm.H"
 #include "multicomponentFluid.H"
@@ -50,10 +49,10 @@ namespace massTransferRateCoefficientModels
 {
 
 /*---------------------------------------------------------------------------*\
-                                 Class blasius
+                                 Class Blasius
 \*---------------------------------------------------------------------------*/
 
-class blasius
+class Blasius
 :
     public massTransferRateCoefficientModel
 {
@@ -68,9 +67,6 @@ class blasius
         //- 2nd coefficient of Diffusivity of specie
         const dimensionedScalar D2_;
 
-        //- Model coefficient
-        const scalar C_;
-
         //- Point on inlet patch
         const vector inlet_;
 
@@ -83,13 +79,13 @@ class blasius
 public:
 
     //- Runtime type information
-    TypeName("blasius");
+    TypeName("Blasius");
 
 
     // Constructors
 
         //- Construct from components
-        blasius
+        Blasius
         (
             const dictionary& dict,
             const fvMesh& mesh,
@@ -98,7 +94,7 @@ public:
 
 
     //- Destructor
-    virtual ~blasius()
+    virtual ~Blasius()
     {}
 
 
