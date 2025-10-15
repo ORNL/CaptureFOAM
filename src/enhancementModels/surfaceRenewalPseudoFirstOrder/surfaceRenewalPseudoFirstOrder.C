@@ -25,7 +25,7 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "pseudoFirstOrder.H"
+#include "surfaceRenewalPseudoFirstOrder.H"
 #include "addToRunTimeSelectionTable.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -34,14 +34,14 @@ namespace Foam
 {
 namespace enhancementModels
 {
-    defineTypeNameAndDebug(pseudoFirstOrder, 0);
-    addToRunTimeSelectionTable(enhancementModel, pseudoFirstOrder, dictionary);
+    defineTypeNameAndDebug(surfaceRenewalPseudoFirstOrder, 0);
+    addToRunTimeSelectionTable(enhancementModel, surfaceRenewalPseudoFirstOrder, dictionary);
 }
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::enhancementModels::pseudoFirstOrder::pseudoFirstOrder
+Foam::enhancementModels::surfaceRenewalPseudoFirstOrder::surfaceRenewalPseudoFirstOrder
 (
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
@@ -65,7 +65,7 @@ Foam::enhancementModels::pseudoFirstOrder::pseudoFirstOrder
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::enhancementModels::pseudoFirstOrder::update()
+void Foam::enhancementModels::surfaceRenewalPseudoFirstOrder::update()
 {
     //- Look up film-side mass transfer rate coefficient field
     const volScalarField& k_l = filmMesh_.lookupObject<volScalarField>("k");
@@ -85,7 +85,7 @@ void Foam::enhancementModels::pseudoFirstOrder::update()
 }
 
 
-bool Foam::enhancementModels::pseudoFirstOrder::read()
+bool Foam::enhancementModels::surfaceRenewalPseudoFirstOrder::read()
 {
     if (enhancementModel::read())
     {
