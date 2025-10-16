@@ -59,7 +59,8 @@ Foam::massTransferRateCoefficientModels::porousMedia::porousMedia
     multicomponentFluid_(mesh.lookupObject<solvers::multicomponentFluid>(solver::typeName)),
     thermo_(multicomponentFluid_.thermo),
     C_(rateModelCoeffs_.lookupOrDefault<scalar>("C", 0.054)),
-    D_(rateModelCoeffs_.lookup<scalar>("D")),
+    D1_(dimArea/dimTime/dimTemperature, rateModelCoeffs_.lookup<scalar>("D1")),
+    D2_(dimArea/dimTime, rateModelCoeffs_.lookup<scalar>("D2")),
     dp_(rateModelCoeffs_.lookup<scalar>("poreDiameter")),
     eps_(rateModelCoeffs_.lookup<scalar>("porosity"))
 {
@@ -77,7 +78,10 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
     //- Look up velocity field from mesh
     const volVectorField& U = mesh_.lookupObject<volVectorField>("U");
     const vectorField& Ub = U.boundaryField()[patchID_];
-    
+
+    const volScalarField& T = mesh_.lookupObject<volScalarField>("T");
+    const scalarField& Tboun = T.boundaryField()[patchID_];
+
     //- Get density and porosity fields from solver
     const volScalarField& rho = thermo_.rho();
     const volScalarField& mu = thermo_.mu();
@@ -99,13 +103,14 @@ Foam::massTransferRateCoefficientModels::porousMedia::k()
         const label celli = transferCells[facei];
         
         //- Calculate correlation quantities
-        const scalar beta = Foam::pow(mu[facei] / (rho[facei] * D_), 0.333);
+        const scalar D = (D1_.value() * Tboun[facei]) + D2_.value();
+        const scalar beta = Foam::pow(mu[facei] / (rho[facei] * D), 0.333);
         const scalar gamma
             = Foam::pow(rho[facei] * mag(Ub[facei]) * dp_
                         / (mu[facei] * (1.0 - eps_)), 0.8);
         
         //- Set rate coefficient
-        k_[celli] = C_ * beta * gamma * D_ / dp_;
+        k_[celli] = C_ * beta * gamma * D / dp_;
 
 	// Get the face index for the current cell
         const label faceIndex = mesh_.boundary()[patchID_].faceCells()[facei];
