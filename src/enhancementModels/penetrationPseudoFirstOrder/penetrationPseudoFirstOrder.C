@@ -81,10 +81,14 @@ void Foam::enhancementModels::penetrationPseudoFirstOrder::update()
     //- Set E = Ha[{1 + pi/8*Ha^2}*erf{sqrt(4*Ha^2/pi)} + exp(4*Ha^2/pi)/2*Ha]
     if (filmMesh_.time().value() >= tStart_)
     {
-        const volScalarField Ha = Foam::sqrt(D * enhancementModel::kApp() / Foam::pow(klLim,2));	    
+        const volScalarField Ha = Foam::sqrt(D * enhancementModel::kApp()) / klLim;	    
+
+	// this is to avoid that Foam::exp blows up due to very high values
+	volScalarField arg = Foam::min(Ha, 15.0);
+	//
 
         E_ = (1.0 + (pi/(8.0 * Foam::pow(Ha,2)))) * Foam::erf(Ha * Foam::pow(4.0/pi,0.5));
-        E_ += 0.5 * Foam::exp(4.0 * Foam::pow(Ha,2) / pi) / Ha;
+        E_ += 0.5 * Foam::exp(4.0 * Foam::pow(arg,2) / pi) / Ha;
         E_ *= Ha;
 
     }
