@@ -67,10 +67,10 @@ class pipeBlasius
         //- 2nd coefficient of Diffusivity of specie
         const dimensionedScalar D2_;
 
-	//- Pipe diameter
+        //- Pipe diameter
         const scalar diam_;
 
-	// Boolean flag to identify if it is film
+        // Boolean flag to identify if it is film
         bool isFilm_;
 public:
 
