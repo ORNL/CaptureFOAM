@@ -61,7 +61,7 @@ Foam::massTransferRateCoefficientModels::pipeBlasius::pipeBlasius
     
     D1_(dimArea/dimTime/dimTemperature, rateModelCoeffs_.lookup<scalar>("D1")),
     D2_(dimArea/dimTime, rateModelCoeffs_.lookup<scalar>("D2")),
-    diam_(rateModelCoeffs_.lookup<scalar>("Pipe Diameter"))
+    diam_(rateModelCoeffs_.lookup<scalar>("Diameter"))
 {
 
         if (mesh.foundObject<solvers::multicomponentFilm>("solver"))
