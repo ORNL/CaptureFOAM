@@ -33,8 +33,10 @@ Description
     3 < Ha < E_inf;
 
     References:
-    [1] Putta, K. R., Tobiesen, F. A., Svendsen, H. F., & Knuutila, H. K. (2017). 
-    Applicability of enhancement factor models for CO2 absorption into aqueous MEA solutions. 
+    [1] Putta, K. R., Tobiesen, F. A., Svendsen, H. F., 
+    & Knuutila, H. K. (2017). 
+    Applicability of enhancement factor models for CO2 absorption into aqueous 
+    MEA solutions. 
     Applied Energy, 206, 765-783.
 
     [2] Hatta S. Technical reports. Tohoku Imp Univ; 1928. 8.

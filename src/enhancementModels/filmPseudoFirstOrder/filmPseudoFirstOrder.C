@@ -35,7 +35,8 @@ namespace Foam
 namespace enhancementModels
 {
     defineTypeNameAndDebug(filmPseudoFirstOrder, 0);
-    addToRunTimeSelectionTable(enhancementModel, filmPseudoFirstOrder, dictionary);
+    addToRunTimeSelectionTable(enhancementModel, filmPseudoFirstOrder, 
+		    dictionary);
 }
 }
 
@@ -56,7 +57,8 @@ Foam::enhancementModels::filmPseudoFirstOrder::filmPseudoFirstOrder
         filmSpecieID
     ),
     
-    D1_(dimArea/dimTime/dimTemperature, massTransferModelCoeffs_.lookup<scalar>("Dl1")),
+    D1_(dimArea/dimTime/dimTemperature, 
+		    massTransferModelCoeffs_.lookup<scalar>("Dl1")),
     D2_(dimArea/dimTime, massTransferModelCoeffs_.lookup<scalar>("Dl2")),
     tStart_(massTransferModelCoeffs_.lookupOrDefault<scalar>("tStart", 0.0))
 {
@@ -79,7 +81,8 @@ void Foam::enhancementModels::filmPseudoFirstOrder::update()
     //- Set E = Ha / tanh(Ha)
     if (filmMesh_.time().value() >= tStart_)
     {
-        const volScalarField Ha = Foam::sqrt(D * enhancementModel::kApp() / Foam::pow(klLim,2));
+        const volScalarField Ha = Foam::sqrt(D * enhancementModel::kApp()) 
+					/ klLim;
 
         E_ = Ha / Foam::tanh(Ha);
     }
