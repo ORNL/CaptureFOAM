@@ -73,9 +73,12 @@ class porousMedia
         //- Model coefficient
         const scalar C_;
 
-        //- Diffusivity of specie
-        const scalar D_;
+        //- 1st coefficient of Diffusivity of specie
+        const dimensionedScalar D1_;
         
+        //- 2nd coefficient of Diffusivity of specie
+        const dimensionedScalar D2_;
+
         //- Pore diameter
         const scalar dp_;
         

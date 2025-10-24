@@ -24,18 +24,18 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::massTransferRateCoefficientModels::Higbie
+    Foam::massTransferRateCoefficientModels::Blasius
 
 Description
-    Mass transfer rate coefficient model based on Higbie penetration theory.
+    Mass transfer rate coefficient model based on Blasius theory.
 
 SourceFiles
-    Higbie.C
+    Blasius.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef Higbie_H
-#define Higbie_H
+#ifndef Blasius_H
+#define Blasius_H
 
 #include "massTransferRateCoefficientModel.H"
 #include "multicomponentFilm.H"
@@ -49,10 +49,10 @@ namespace massTransferRateCoefficientModels
 {
 
 /*---------------------------------------------------------------------------*\
-                                 Class Higbie
+                                 Class Blasius
 \*---------------------------------------------------------------------------*/
 
-class Higbie
+class Blasius
 :
     public massTransferRateCoefficientModel
 {
@@ -67,25 +67,25 @@ class Higbie
         //- 2nd coefficient of Diffusivity of specie
         const dimensionedScalar D2_;
 
-        // Dictionary to get value of sigma
-        IOdictionary physicalProperties_;
+        //- Point on inlet patch
+        const vector inlet_;
 
-        // Surface tension coefficient
-        dimensionedScalar sigma_;
+        //- Direction of flow
+        const vector dir_;
 
         // Boolean flag to identify if it is film
         bool isFilm_;
-	
+
 public:
 
     //- Runtime type information
-    TypeName("Higbie");
+    TypeName("Blasius");
 
 
     // Constructors
 
         //- Construct from components
-        Higbie
+        Blasius
         (
             const dictionary& dict,
             const fvMesh& mesh,
@@ -94,7 +94,7 @@ public:
 
 
     //- Destructor
-    virtual ~Higbie()
+    virtual ~Blasius()
     {}
 
 
