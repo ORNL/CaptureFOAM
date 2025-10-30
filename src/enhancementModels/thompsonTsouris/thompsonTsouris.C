@@ -44,8 +44,8 @@ namespace enhancementModels
     {
 	dimensionedScalar eps(dimMoles/dimVolume, 1.0e-16);
 	dimensionedScalar eps2(dimVolume/dimMoles, 1.0e-16);
-
-    	const volScalarField& rho = filmMesh_.lookupObject<volScalarField>("rho");
+	
+        const volScalarField& rho = filmMesh_.lookupObject<volScalarField>("rho");
 	const volScalarField& CO2 = filmMesh_.lookupObject<volScalarField>("CO2");
 	const dimensionedScalar Wco2(dimMass/dimMoles, 44.0);
 	const volScalarField Cco2 = (rho * CO2 / Wco2) + eps;
@@ -87,7 +87,8 @@ namespace enhancementModels
 	  dimensionedScalar Dmeacoo(dimArea/dimTime, 1.5e-9);	  
 
 	  volScalarField num = Foam::sqrt(Keq) * C1 * (Dmeacoo / D_);
-	  volScalarField denom = (1.0 + (2.0 * Dmeacoo / Dmea)) * Foam::sqrt(Keq * Cco2) * (Foam::sqrt(Cco2b) + Foam::sqrt(Cco2));
+	  volScalarField denom = (1.0 + (2.0 * Dmeacoo / Dmea)) 
+		  * Foam::sqrt(Keq * Cco2) * (Foam::sqrt(Cco2b) + Foam::sqrt(Cco2));
 
 	  Einf_ = 1.0 + (num / denom);
 	}
@@ -112,7 +113,8 @@ namespace enhancementModels
           dimensionedScalar Dksarcoo(dimArea/dimTime, 1.0e-9);
 
 	  volScalarField num = Foam::sqrt(Keq) * C1 * (Dksarcoo / D_);
-	  volScalarField denom = (1.0 + (2.0 * Dksarcoo / Dksar)) * Foam::sqrt(Keq * Cco2) * (Foam::sqrt(Cco2b) + Foam::sqrt(Cco2));
+	  volScalarField denom = (1.0 + (2.0 * Dksarcoo / Dksar)) 
+		  * Foam::sqrt(Keq * Cco2) * (Foam::sqrt(Cco2b) + Foam::sqrt(Cco2));
 
 	  Einf_ = 1.0 + (num / denom);
 	}
@@ -149,7 +151,7 @@ Foam::enhancementModels::thompsonTsouris::thompsonTsouris
         film,
         fluid,
         filmSpecieID,
-	bulkPatchID
+        bulkPatchID
     ),
 
     D1_(dimArea/dimTime/dimTemperature, massTransferModelCoeffs_.lookup<scalar>("Dl1")),

@@ -63,16 +63,17 @@ class thompsonTsouris
         //- 1st coefficient of Diffusivity of specie in liquid
         const dimensionedScalar D1_;
 
-	//- 2nd coefficient of Diffusivity of specie in liquid
+        //- 2nd coefficient of Diffusivity of specie in liquid
         const dimensionedScalar D2_;
 
-	volScalarField D_;
+        // Diffusivity
+        volScalarField D_;
 
         //- Time to turn enhancement on
         const scalar tStart_;
 
-	//- Instantaneous enhancement factor
-	volScalarField Einf_;
+        //- Instantaneous enhancement factor
+        volScalarField Einf_;
 
 	//- Index of mass transfer patch in film mesh
         const label filmPatchID_;
@@ -92,7 +93,7 @@ public:
             const solvers::multicomponentFilm& film,
             const solvers::multicomponentFluid& fluid,
             const label& filmSpecieID,
-	    const label& bulkPatchID
+            const label& bulkPatchID
         );
 
 

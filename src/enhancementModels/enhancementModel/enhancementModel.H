@@ -105,7 +105,7 @@ public:
             const solvers::multicomponentFilm& film,
             const solvers::multicomponentFluid& fluid,
             const label& filmSpecieID,
-	    const label& bulkPatchID
+            const label& bulkPatchID
         ),
         (dict, film, fluid, filmSpecieID, bulkPatchID)
     );
@@ -121,7 +121,7 @@ public:
             const solvers::multicomponentFilm& film,
             const solvers::multicomponentFluid& fluid,
             const label& filmSpecieID,
-	    const label& bulkPatchID
+            const label& bulkPatchID
         );
         
         //- Disallow default bitwise copy construction
@@ -136,7 +136,7 @@ public:
             const solvers::multicomponentFilm& film,
             const solvers::multicomponentFluid& fluid,
             const label& filmSpecieID,
-	    const label& bulkPatchID
+            const label& bulkPatchID
         );
 
     //- Destructor
