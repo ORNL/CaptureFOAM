@@ -56,9 +56,9 @@ Foam::enhancementModels::filmPseudoFirstOrder::filmPseudoFirstOrder
         typeName,
         dict,
         film,
-	fluid,
+        fluid,
         filmSpecieID,
-	bulkPatchID
+        bulkPatchID
     ),
     
     D1_(dimArea/dimTime/dimTemperature, 
