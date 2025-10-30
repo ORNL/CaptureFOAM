@@ -45,7 +45,9 @@ Foam::enhancementModels::surfaceRenewalPseudoFirstOrder::surfaceRenewalPseudoFir
 (
     const dictionary& dict,
     const solvers::multicomponentFilm& film,
-    const label& filmSpecieID
+    const solvers::multicomponentFluid& fluid,
+    const label& filmSpecieID,
+    const label& bulkPatchID
 )
 :
     enhancementModel
@@ -53,7 +55,9 @@ Foam::enhancementModels::surfaceRenewalPseudoFirstOrder::surfaceRenewalPseudoFir
         typeName,
         dict,
         film,
-        filmSpecieID
+        fluid,
+        filmSpecieID,
+	bulkPatchID
     ),
     
     D1_(dimArea/dimTime/dimTemperature, massTransferModelCoeffs_.lookup<scalar>("Dl1")),

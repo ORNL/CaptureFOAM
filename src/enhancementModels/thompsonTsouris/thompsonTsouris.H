@@ -24,28 +24,22 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
-    Foam::interphaseMassTransferModels::surfaceRenewalPseudoFirstOrder
+    Foam::interphaseMassTransferModels::thompsonTsouris
 
 Description
-    Enhancement factor for a pseudo-first order irreversible
-    reaction based on the surface renewal theory
-    where E = sqrt(1 + Ha^2). Model more appropriate for 
-    3 < Ha < E_inf;
+    Enhancement factor from:
 
-    References
-    [1] Putta, K. R., Tobiesen, F. A., Svendsen, H. F., & Knuutila, H. K. (2017). 
-    Applicability of enhancement factor models for CO2 absorption into aqueous MEA solutions. 
-    Applied Energy, 206, 765-783.
-
-    [2] Danckwerts PV. Gas-liquid reactions. McGraw-Hill; 1970.
+    Thompson, J. A., & Tsouris, C. (2021). Rate-based absorption modeling for 
+    postcombustion CO2 capture with additively manufactured structured packing. 
+    Industrial & Engineering Chemistry Research, 60(41), 14845-14855.
 
 SourceFiles
-    surfaceRenewalPseudoFirstOrder.C
+    thompsonTsouris.C
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef surfaceRenewalPseudoFirstOrder_H
-#define surfaceRenewalPseudoFirstOrder_H
+#ifndef thompsonTsouris_H
+#define thompsonTsouris_H
 
 #include "enhancementModel.H"
 
@@ -57,10 +51,10 @@ namespace enhancementModels
 {
 
 /*---------------------------------------------------------------------------*\
-                                  Class surfaceRenewalPseudoFirstOrder
+                                  Class thompsonTsouris
 \*---------------------------------------------------------------------------*/
 
-class surfaceRenewalPseudoFirstOrder
+class thompsonTsouris
 :
     public enhancementModel
 {
@@ -72,19 +66,27 @@ class surfaceRenewalPseudoFirstOrder
 	//- 2nd coefficient of Diffusivity of specie in liquid
         const dimensionedScalar D2_;
 
+	volScalarField D_;
+
         //- Time to turn enhancement on
         const scalar tStart_;
+
+	//- Instantaneous enhancement factor
+	volScalarField Einf_;
+
+	//- Index of mass transfer patch in film mesh
+        const label filmPatchID_;
 
 public:
 
     //- Runtime type information
-    TypeName("surfaceRenewalPseudoFirstOrder");
+    TypeName("thompsonTsouris");
 
 
     // Constructors
 
         //- Construct from components
-        surfaceRenewalPseudoFirstOrder
+        thompsonTsouris
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
@@ -95,14 +97,17 @@ public:
 
 
     //- Destructor
-    virtual ~surfaceRenewalPseudoFirstOrder()
+    virtual ~thompsonTsouris()
     {}
 
 
     // Member Functions
-    
+
         //- Update mass transfer field
         virtual void update();
+	
+        //- Calculate and return instantaneous enhancement factor
+        volScalarField& Einf();
 
         //- Read the dictionary
         virtual bool read();

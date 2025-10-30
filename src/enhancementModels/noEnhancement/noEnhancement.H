@@ -68,7 +68,9 @@ public:
         (
             const dictionary& dict,
             const solvers::multicomponentFilm& film,
-            const label& filmSpecieID
+            const solvers::multicomponentFluid& fluid,
+            const label& filmSpecieID,
+	    const label& bulkPatchID
         );
 
 
