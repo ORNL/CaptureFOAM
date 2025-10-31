@@ -5,6 +5,7 @@ noEnhancement/noEnhancement.C
 lowHa/lowHa.C
 surfaceRenewalPseudoFirstOrder/surfaceRenewalPseudoFirstOrder.C
 filmPseudoFirstOrder/filmPseudoFirstOrder.C
+penetrationPseudoFirstOrder/penetrationPseudoFirstOrder.C
 thompsonTsouris/thompsonTsouris.C
 
 LIB = $(FOAM_USER_LIBBIN)/libenhancementModels
