@@ -31,6 +31,9 @@ Description
     where E = Ha[{1 + pi/8*Ha^2}*erf{sqrt(4*Ha^2/pi)} + exp(4*Ha^2/pi)/2*Ha]. 
     Model more appropriate for 3 < Ha < E_inf;
 
+    NOTE: The value of Ha inside the exponential function is capped at 15.
+          This is to avoid that funtion blowing up. 
+
     References
     [1] Putta, K. R., Tobiesen, F. A., Svendsen, H. F., & Knuutila, H. K. (2017). 
     Applicability of enhancement factor models for CO2 absorption into aqueous MEA solutions. 
