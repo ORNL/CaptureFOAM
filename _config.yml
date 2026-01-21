@@ -1,0 +1,59 @@
+# Site settings
+title: CaptureFOAM
+description: CaptureFOAM documentation
+baseurl: "/CaptureFOAM"
+url: "https://ORNL.github.io"
+repository: ORNL/CaptureFOAM
+
+permalink: pretty
+
+remote_theme: just-the-docs/just-the-docs
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-feed
+
+compress_html:
+  blanklines: true
+
+# Override purple (default) to ORNL green
+color_scheme: ornl_green
+
+
+# External navigation links
+nav_external_links:
+  - title: CaptureFOAM on GitHub
+    url: "https://github.com/ORNL/CaptureFOAM"
+
+# Aux links for the upper right navigation
+aux_links:
+  "CaptureFOAM on GitHub":
+    - "https://github.com/ORNL/CaptureFOAM"
+
+# Makes Aux links open in a new tab. Default is false
+aux_links_new_tab: false
+
+# Enable callouts in markdown    
+callouts_level: quiet # or loud
+callouts:
+  highlight:
+    color: yellow
+  important:
+    title: Important
+    color: blue
+  new:
+    title: New
+    color: green
+  note:
+    title: Note
+    color: purple
+  warning:
+    title: Warning
+    color: red
+  custom:
+    title: Note
+    color: ornl_green
+
+sass:
+  custom_stylesheet: _sass/custom/custom.scss

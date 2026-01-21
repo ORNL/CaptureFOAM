@@ -1,4 +1,0 @@
-bulkMassTransfer.C
-filmMassTransfer.C
-
-LIB = $(FOAM_USER_LIBBIN)/libfilmMassTransfer

@@ -1,3 +1,0 @@
-mixedTemperature/mixedTemperatureFvPatchScalarField.C
-
-LIB = $(FOAM_USER_LIBBIN)/libconvectionBCs
