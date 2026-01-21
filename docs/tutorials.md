@@ -1,4 +1,5 @@
 ---
+title: CaptureFOAM Tutorials
 parent: CaptureFOAM v1.0 User Guide
 nav_order: 4
 has_children: true
