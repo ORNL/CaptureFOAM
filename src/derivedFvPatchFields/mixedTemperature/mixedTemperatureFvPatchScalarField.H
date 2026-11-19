@@ -105,7 +105,7 @@ public:
         mixedTemperatureFvPatchScalarField
         (
             const fvPatch&,
-            const DimensionedField<scalar, volMesh>&,
+            const DimensionedField<scalar, fvMesh>&,
             const dictionary&
         );
 
@@ -115,7 +115,7 @@ public:
         (
             const mixedTemperatureFvPatchScalarField&,
             const fvPatch&,
-            const DimensionedField<scalar, volMesh>&,
+            const DimensionedField<scalar, fvMesh>&,
             const fvPatchFieldMapper&
         );
 
@@ -129,13 +129,13 @@ public:
         mixedTemperatureFvPatchScalarField
         (
             const mixedTemperatureFvPatchScalarField&,
-            const DimensionedField<scalar, volMesh>&
+            const DimensionedField<scalar, fvMesh>&
         );
 
         //- Construct and return a clone setting internal field reference
         virtual tmp<fvPatchScalarField> clone
         (
-            const DimensionedField<scalar, volMesh>& iF
+            const DimensionedField<scalar, fvMesh>& iF
         ) const
         {
             return tmp<fvPatchScalarField>

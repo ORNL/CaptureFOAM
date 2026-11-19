@@ -4,6 +4,10 @@ cd ${0%/*} || exit 1    # Run from this directory
 # Parse arguments for library compilation
 . $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
 
+cd src
+wmake $targetType reactions
+cd ..
+
 # Make multicomponent film module
 cd applications/modules/multicomponentFilm
 ./Allwmake
@@ -14,7 +18,7 @@ cd src
 wmake $targetType enhancementModels
 wmake $targetType massTransferRateCoefficientModels
 wmake $targetType interphaseMassTransferModels
-wmake $targetType reactions
+#wmake $targetType reactions
 wmake $targetType fvModels
 wmake $targetType derivedFvPatchFields
 

@@ -35,7 +35,7 @@ Foam::mixedTemperatureFvPatchScalarField::
 mixedTemperatureFvPatchScalarField
 (
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const dictionary& dict
 )
 :
@@ -57,7 +57,7 @@ mixedTemperatureFvPatchScalarField
 (
     const mixedTemperatureFvPatchScalarField& ptf,
     const fvPatch& p,
-    const DimensionedField<scalar, volMesh>& iF,
+    const DimensionedField<scalar, fvMesh>& iF,
     const fvPatchFieldMapper& mapper
 )
 :
@@ -72,7 +72,7 @@ Foam::mixedTemperatureFvPatchScalarField::
 mixedTemperatureFvPatchScalarField
 (
     const mixedTemperatureFvPatchScalarField& ptf,
-    const DimensionedField<scalar, volMesh>& iF
+    const DimensionedField<scalar, fvMesh>& iF
 )
 :
     mixedFvPatchScalarField(ptf, iF),

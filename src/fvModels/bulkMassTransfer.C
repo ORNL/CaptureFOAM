@@ -65,8 +65,8 @@ Foam::fv::bulkMassTransfer::bulkMassTransfer
     specieName_(dict.lookup("specie")),
     
     filmPatchName_(dict.lookup("transferPatch")),
-    filmPatchi_(mesh.boundaryMesh().findIndex(filmPatchName_)),
-    filmPatch_(mesh.boundaryMesh()[filmPatchi_]),
+    filmPatchi_(mesh.polyMesh::boundary().findIndex(filmPatchName_)),
+    filmPatch_(mesh.polyMesh::boundary()[filmPatchi_]),
     filmPatchMap_(refCast<const mappedPatchBase>(filmPatch_)),
     
     interphaseMassTransfer_(nullptr),

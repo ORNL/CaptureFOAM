@@ -47,7 +47,7 @@ See also
 
 #include "isothermalFilm.H"
 #include "fluidMulticomponentThermo.H"
-#include "combustionModel.H"
+#include "reactionModel.H"
 #include "filmMulticomponentThermophysicalTransportModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -80,7 +80,7 @@ protected:
 
     // Reactions
 
-        autoPtr<combustionModel> reaction_;
+        autoPtr<reactionModel> reaction_;
         multivariateSurfaceInterpolationScheme<scalar>::fieldTable fields;
 
     // Thermophysical transport
@@ -98,8 +98,8 @@ public:
         //- Reference to the composition
         const PtrList<volScalarField>& Y;
         
-        //- Reference to the combustion model
-        const autoPtr<combustionModel>& reaction;
+        //- Reference to the reaction model
+        const autoPtr<reactionModel>& reaction;
         
 
     //- Runtime type information
@@ -129,8 +129,8 @@ public:
         //- Predict the momentum and thermophysical transport modelling
         virtual void prePredictor();
 
-        //- Correct the momentum and thermophysical transport modelling
-        virtual void postCorrector();
+        //- Correct the thermophysical transport
+	virtual void thermophysicalTransportCorrector();
 
 
     // Member Operators

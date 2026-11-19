@@ -7,7 +7,7 @@ EXE_INC = \
     -I$(LIB_SRC)/physicalProperties/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/basic/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/specie/lnInclude \
-    -I$(LIB_SRC)/combustionModels/lnInclude \
+    -I$(LIB_SRC)/reactionModels/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/multicomponentThermo/lnInclude \
     -I$(LIB_SRC)/MomentumTransportModels/momentumTransportModels/lnInclude \
     -I$(LIB_SRC)/MomentumTransportModels/compressible/lnInclude \
@@ -20,7 +20,7 @@ EXE_INC = \
     -I$(FOAM_MODULES)/twoPhaseVoFSolver/lnInclude \
     -I$(FOAM_MODULES)/twoPhaseSolver/lnInclude \
     -I$(FOAM_MODULES)/VoFSolver/lnInclude \
-    -I$(FOAM_MODULES)/fluidSolver/lnInclude \
+    -I$(FOAM_MODULES)/basicFluidSolver/lnInclude \
     -I$(LIB_SRC)/twoPhaseModels/VoF \
     -I$(LIB_SRC)/twoPhaseModels/interfaceCompression/lnInclude \
     -I$(LIB_SRC)/twoPhaseModels/interfaceProperties/lnInclude \
@@ -38,7 +38,7 @@ EXE_INC = \
 
 LIB_LIBS = \
     -L$(FOAM_USER_LIBBIN) \
-    -lisothermalFilm \
-    -lcompressibleVoF \
-    -lmulticomponentFluid \
+    -lisothermalFilmSolver \
+    -lcompressibleVoFSolver \
+    -lmulticomponentFluidSolver \
     -lmulticomponentFilm

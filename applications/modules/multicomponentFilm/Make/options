@@ -13,19 +13,19 @@ EXE_INC = \
     -I$(LIB_SRC)/thermophysicalModels/specie/lnInclude \
     -I$(LIB_SRC)/thermophysicalModels/chemistryModel/lnInclude \
     -I$(LIB_SRC)/ODE/lnInclude \
-    -I$(LIB_SRC)/combustionModels/lnInclude \
+    -I$(LIB_SRC)/reactionModels/lnInclude \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/meshTools/lnInclude
 
 LIB_LIBS = \
     -L$(FOAM_USER_LIBBIN) \
-    -lisothermalFilm \
+    -lisothermalFilmSolver \
     -luserfilmMulticomponentThermophysicalTransportModels \
     -lfilmReactions \
     -lspecie \
     -lchemistryModel \
     -lODE \
-    -lcombustionModels \
+    -lreactionModels \
     -lmulticomponentThermophysicalModels \
     -lcoupledThermophysicalTransportModels \
     -lmomentumTransportModels \

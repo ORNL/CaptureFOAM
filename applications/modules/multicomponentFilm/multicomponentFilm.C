@@ -48,7 +48,7 @@ Foam::solvers::multicomponentFilm::multicomponentFilm(fvMesh& mesh)
     
     Y_(thermo_.Y()),
 
-    reaction_(combustionModel::New(thermo_, momentumTransport())),
+    reaction_(reactionModel::New(thermo_, momentumTransport())),
 
     thermophysicalTransport
     (
@@ -91,14 +91,9 @@ void Foam::solvers::multicomponentFilm::prePredictor()
     }
 }
 
-void Foam::solvers::multicomponentFilm::postCorrector()
+void Foam::solvers::multicomponentFilm::thermophysicalTransportCorrector()
 {
-    isothermalFilm::postCorrector();
-
-    if (pimple.correctTransport())
-    {
-        thermophysicalTransport->correct();
-    }
+    thermophysicalTransport->correct();
 }
 
 // ************************************************************************* //

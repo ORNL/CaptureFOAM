@@ -319,7 +319,7 @@ void Foam::fv::filmMassTransfer::addSup
         bulkToFilmTransferRate<vector>
         (
             &bulkMassTransfer::UTransferRate,
-            dimMomentum
+            dimensions::momentum
         )
       //- Subtract film-to-bulk contribution (zero since we
       //  set transferRate_ = 0.0)
